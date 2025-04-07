@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- The title will be updated via JavaScript based on language selection -->
+  <title>Home</title>
+  <link id="favicon" rel="icon" href="Logo/frame_000_delay.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Your existing CSS styles */
+    :root {
+      --primary: #6C63FF;
+      --secondary: #4A45B2;
+      --accent: #00E5FF;
+      --dark: #0d0d0d;
+      --light: #fff;
+      --card-bg: rgba(20, 20, 30, 0.6);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --transition: 0.3s ease;
+      --text-shadow: rgba(0, 0, 0, 0.3);
+      --btn-glow: rgba(108, 99, 255, 0.7);
+    }
+    /* Theme Colors */
+    .cosmic {
+      --primary: #6C63FF;
+      --secondary: #4A45B2;
+      --accent: #00E5FF;
+      --text-shadow: rgba(0, 0, 0, 0.3);
+      --btn-glow: rgba(108, 99, 255, 0.7);
+    }
+    .forest {
+      --primary: #4CAF50;
+      --secondary: #388E3C;
+      --accent: #8BC34A;
+      --text-shadow: rgba(0, 0, 0, 0.3);
+      --btn-glow: rgba(76, 175, 80, 0.7);
+    }
+    .sunset {
+      --primary: #FF9800;
+      --secondary: #F57C00;
+      --accent: #FFEB3B;
+      --text-shadow: rgba(0, 0, 0, 0.3);
+      --btn-glow: rgba(255, 152, 0, 0.7);
+    }
+    .ruby {
+      --primary: #F44336;
+      --secondary: #D32F2F;
+      --accent: #FF9E80;
+      --text-shadow: rgba(0, 0, 0, 0.3);
+      --btn-glow: rgba(244, 67, 54, 0.7);
+    }
+    .white {
+      --primary: #ffffff50;
+      --secondary: #ffffff50;
+      --accent: #ffffff;
+      --text-shadow: rgba(0, 0, 0, 0.3);
+      --btn-glow: rgba(255, 255, 255, 0.7);
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      color: var(--light);
+      transition: all var(--transition);
+      overflow-x: hidden;
+    }
+    /* Video Background */
+    #video-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -2;
+    }
+    /* YouTube Background iframe */
+    #yt-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      border: none;
+      display: none;
+    }
+    /* Overlay */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.7));
+      z-index: -1;
+    }
+    .particles {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: moveParticles 30s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes moveParticles {
+      0% { background-position: 0 0; }
+      100% { background-position: 100px 100px; }
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      gap: 30px;
+      padding: 20px;
+      position: relative;
+    }
+    /* Top Section with Text and Image */
+    .top-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+      gap: 25px;
+      text-align: center;
+    }
+    .top-section .text {
+      font-size: 3rem;
+      font-weight: 700;
+      background: linear-gradient(45deg, var(--light) 30%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 15px var(--text-shadow);
+      animation: pulse 3s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+    .top-section .image-container {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      transform-style: preserve-3d;
+      transition: transform 0.6s ease;
+    }
+    .top-section .image {
+      width: 100%;
+      height: 100%;
+      border-radius: 20%;
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      transition: all var(--transition);
+      transform: translateZ(20px);
+      border: 2px solid var(--card-border);
+    }
+    .links-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 960px;
+    }
+    .link {
+      font-size: 1.5rem;
+      font-weight: 500;
+      padding: 20px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid var(--card-border);
+      cursor: pointer;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+      transition: all var(--transition);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .link::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+      opacity: 0;
+      transform: scale(0.5);
+      transition: transform 0.6s ease, opacity 0.6s ease;
+    }
+    .link:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent);
+      box-shadow: 0 10px 25px var(--btn-glow);
+    }
+    .link:hover::before {
+      opacity: 0.1;
+      transform: scale(1);
+    }
+    /* Loader Replacement */
+    .loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--dark);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.6s ease;
+    }
+    /* Loading Wave Animation */
+    .loading-wave {
+      width: 300px;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+    .loading-bar {
+      width: 20px;
+      height: 10px;
+      margin: 0 5px;
+      background-color: var(--accent);
+      border-radius: 5px;
+      animation: loading-wave-animation 1s ease-in-out infinite;
+    }
+    .loading-bar:nth-child(2) { animation-delay: 0.1s; }
+    .loading-bar:nth-child(3) { animation-delay: 0.2s; }
+    .loading-bar:nth-child(4) { animation-delay: 0.3s; }
+    @keyframes loading-wave-animation {
+      0% { height: 10px; }
+      50% { height: 50px; }
+      100% { height: 10px; }
+    }
+    #content {
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .fade-in {
+      animation: fadeIn 0.8s ease-in-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* Settings Menu */
+    .settings-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      background-color: var(--card-bg);
+      color: white;
+      border: 1px solid var(--card-border);
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.5rem;
+      transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .settings-btn:hover {
+      transform: rotate(30deg);
+      background-color: var(--secondary);
+      box-shadow: 0 5px 20px var(--btn-glow);
+    }
+    .settings-menu {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: white;
+      justify-content: center;
+      align-items: center;
+      z-index: 99;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .settings-content {
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 20px;
+      max-width: 600px;
+      width: 90%;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    }
+    .settings-menu.active {
+      display: flex;
+      opacity: 1;
+    }
+    .settings-menu h2 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+      color: var(--accent);
+      position: relative;
+      padding-bottom: 10px;
+    }
+    .settings-menu h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background: linear-gradient(to right, transparent, var(--accent), transparent);
+    }
+    .settings-section {
+      margin-bottom: 25px;
+    }
+    .settings-section p {
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+      opacity: 0.8;
+    }
+    .settings-menu button,
+    .settings-menu input[type="text"] {
+      font-size: 1rem;
+      padding: 10px 20px;
+      background: var(--card-bg);
+      border-radius: 12px;
+      margin: 8px;
+      cursor: pointer;
+      color: white;
+      border: 1px solid var(--card-border);
+      transition: all var(--transition);
+    }
+    .settings-menu button:hover {
+      transform: translateY(-3px);
+      background: var(--secondary);
+      box-shadow: 0 5px 15px var(--btn-glow);
+    }
+    .settings-menu button.active {
+      background: var(--primary);
+      border-color: var(--accent);
+      box-shadow: 0 0 15px var(--btn-glow);
+    }
+    .close-btn {
+      margin-top: 20px;
+      background: var(--accent) !important;
+      color: var(--dark) !important;
+      font-weight: 600;
+    }
+    /* Border Radius Input */
+    .slider-container {
+      margin-top: 20px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .range-value {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+    .slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 5px;
+      background: var(--dark);
+      outline: none;
+      opacity: 0.7;
+      transition: opacity .2s;
+    }
+    .slider:hover {
+      opacity: 1;
+    }
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+      box-shadow: 0 0 10px var(--accent);
+    }
+    /* Theme Selector */
+    .theme-selector {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .theme-option {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all var(--transition);
+      border: 2px solid transparent;
+    }
+    .theme-option:hover {
+      transform: scale(1.2);
+    }
+    .theme-option.active {
+      border: 2px solid white;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+    /* Credits Button */
+    .credits-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      background-color: var(--card-bg);
+      color: white;
+      border: 1px solid var(--card-border);
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.5rem;
+      transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .credits-btn:hover {
+      transform: rotate(30deg);
+      background-color: var(--secondary);
+      box-shadow: 0 5px 20px var(--btn-glow);
+    }
+    /* Credits Menu */
+    .credits-menu {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: white;
+      justify-content: center;
+      align-items: center;
+      z-index: 99;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    @keyframes popIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+    .credits-menu.active {
+      display: flex;
+      opacity: 1;
+    }
+    .credits-content {
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 20px;
+      max-width: 600px;
+      width: 90%;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+      animation: popIn 0.5s ease-out;
+    }
+    @keyframes wave {
+     0%, 100% { transform: translateY(0); }
+     20% { transform: translateY(2px); }
+     40% { transform: translateY(-2px); }
+     60% { transform: translateY(0); }
+    }
+    .letter {
+      display: inline-block;
+      animation: wave 2s infinite ease-in-out;
+    }
+    @keyframes slideOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(30px); }
+    }
+    .exit {
+      animation: slideOut 0.5s ease forwards;
+    }
+    @media (max-width: 768px) {
+      .top-section .text {
+        font-size: 2.2rem;
+      }
+      .top-section .image-container {
+        width: 120px;
+        height: 120px;
+      }
+      .link {
+        font-size: 1.3rem;
+        padding: 16px;
+      }
+    }
+    @media (max-width: 480px) {
+      .top-section .text {
+        font-size: 1.8rem;
+      }
+      .settings-menu h2 {
+        font-size: 1.6rem;
+      }
+    }
+    .link span {
+      position: relative;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <!-- Video Background (default) -->
+  <video id="video-bg" class="video-background" autoplay loop muted playsinline>
+    <source src="moon lake.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <!-- YouTube Background iframe (hidden by default) -->
+  <iframe id="yt-bg"></iframe>
+
+  <div class="overlay"></div>
+  <div class="particles"></div>
+
+  <!-- Loader with Loading Wave -->
+  <div id="loader" class="loader">
+    <div class="loading-wave">
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+    </div>
+  </div>
+
+  <div id="content" class="container">
+    <div class="top-section">
+      <div class="text" id="welcome-text">Welcome to hell</div>
+      <div class="image-container">
+        <div class="image" id="image"></div>
+      </div>
+    </div>
+    
+    <!-- Links Container -->
+    <div class="links-container">
+      <div class="link" onclick="redirectTo('6/home.html')"><span id="link-grade6">6th</span></div>
+      <div class="link" onclick="redirectTo('5/home.html')"><span id="link-grade5">5th</span></div>
+      <div class="link" onclick="redirectTo('4/home.html')"><span id="link-grade4">4th</span></div>
+      <div class="link" onclick="redirectTo('3/home.html')"><span id="link-grade3">3rd</span></div>
+      <div class="link" onclick="redirectTo('quiz.html')"><span id="link-quiz">Quiz</span></div>
+      <div class="link" onclick="redirectTo('brevet-blanc.html')"><span id="link-brevet">Brevet Blanc</span></div>
+    </div>
+  </div>
+
+  <!-- Settings Button -->
+  <button class="settings-btn" onclick="toggleSettingsMenu()">⚙️</button>
+  <!-- Credits Button -->
+  <button class="credits-btn" onclick="toggleCreditsMenu()">ℹ️</button>
+
+  <!-- Settings Menu -->
+  <div id="settings-menu" class="settings-menu">
+    <div class="settings-content">
+      <h2 id="customize-label">Customize Your Experience</h2>
+      
+      <div class="settings-section">
+        <p id="select-theme-label">Select Theme</p>
+        <div class="theme-selector">
+          <div class="theme-option cosmic active" style="background: linear-gradient(45deg, #6C63FF, #00E5FF)" onclick="changeTheme('cosmic')"></div>
+          <div class="theme-option forest" style="background: linear-gradient(45deg, #4CAF50, #8BC34A)" onclick="changeTheme('forest')"></div>
+          <div class="theme-option sunset" style="background: linear-gradient(45deg, #FF9800, #FFEB3B)" onclick="changeTheme('sunset')"></div>
+          <div class="theme-option ruby" style="background: linear-gradient(45deg, #F44336, #FF9E80)" onclick="changeTheme('ruby')"></div>
+          <div class="theme-option white" style="background: linear-gradient(45deg, #ffffff, #ffffff)" onclick="changeTheme('white')"></div>
+        </div>
+      </div>
+      
+      <div class="settings-section">
+        <p id="background-selection-label">Background Selection</p>
+        <button id="bg-moon-lake" class="active" onclick="usePresetBackground('moon lake.mp4')">Lake</button>
+        <button id="bg-balls" onclick="usePresetBackground('balls.mp4')">Rain</button>
+        <button id="bg-stars" onclick="usePresetBackground('stars.mp4')">Stars</button>
+        <button id="bg-totoro" onclick="usePresetBackground('Totoro.mp4')">Totoro</button>
+        <button id="bg-night-city" onclick="usePresetBackground('Night city.mp4')">Night city</button>
+        <button id="bg-undertale" onclick="usePresetBackground('Undertale.mp4')">Undertale</button>
+      </div>
+      
+      <div class="settings-section">
+        <p id="yt-url-label">YouTube Background URL</p>
+        <input type="text" id="yt-url" placeholder="Enter YouTube URL" />
+        <button id="set-youtube-btn" onclick="setYoutubeBackground()">Set YouTube Background</button>
+      </div>
+      
+      <div class="settings-section">
+        <p id="profile-image-label">Profile Image</p>
+        <button id="img-freaky_memes" class="active" onclick="changeImage('freaky_memes.jpg')">Freaky bob</button>
+        <button id="img-no" onclick="changeImage('No.Png')">Pain</button>
+        <button id="img-none" onclick="changeImage('none')">No Image</button>
+      </div>
+      
+      <div class="settings-section">
+        <p id="image-border-label">Image Border Radius</p>
+        <div class="slider-container">
+          <div class="range-value"><span id="radius-value">20</span>%</div>
+          <input type="range" min="0" max="50" value="20" class="slider" id="radius-slider" oninput="updateBorderRadius(this.value)">
+        </div>
+      </div>
+      
+      <!-- Language Selection -->
+      <div class="settings-section">
+        <p id="language-label">Language</p>
+        <select id="language-select" onchange="changeLanguage(this.value)">
+          <option value="en">English</option>
+          <option value="fr">Français</option>
+          <option value="es">Español</option>
+          <option value="de">Deutsch</option>
+          <option value="la">Latina</option>
+          <option value="el">Ελληνικά</option>
+        </select>
+      </div>
+      
+      <button class="close-btn" onclick="toggleSettingsMenu()">Save & Close</button>
+    </div>
+  </div>
+
+  <!-- Credits Menu -->
+  <div id="credits-menu" class="credits-menu">
+    <div class="credits-content">
+      <h2 id="credits-label">Credits</h2>
+      <p id="credits-dev">
+        <span id="credits-dev-text">Developed by</span> <a href="https://guns.lol/XEKO_YT" target="_blank">XEKO</a>.
+      </p>
+      <p id="credits-loading">
+        <span id="credits-loading-text">Loading animation from</span> <a href="https://uiverse.io/profile/mrpumps31232" target="_blank">mrpumps31232</a> on uiverse.io.
+      </p>
+      <p id="credits-idea">
+        <span id="credits-idea-text">Idea for the Undertale background from</span> <a href="https://guns.lol/frozen2" target="_blank">Frozen</a>.
+      </p>
+      <button id="credits-close" class="close-btn" onclick="toggleCreditsMenu()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    // Favicon animation
+    const totalFrames = 164;
+    const frameDelay = 50;
+    let currentFrame = 0;
+    const favicon = document.getElementById('favicon');
+    function updateFavicon() {
+      const frameNumber = currentFrame.toString().padStart(3, '0');
+      favicon.href = `Logo/frame_${frameNumber}_delay.png`;
+      currentFrame = (currentFrame + 1) % totalFrames;
+    }
+    setInterval(updateFavicon, frameDelay);
+
+    // Current settings
+    const settings = {
+      background: 'moon lake.mp4',
+      image: 'freaky_memes.jpg',
+      borderRadius: 20,
+      theme: 'cosmic',
+      ytBackground: ''
+    };
+
+    function redirectTo(path) {
+      document.body.style.opacity = 0;
+      setTimeout(() => {
+        window.location.href = path;
+      }, 300);
+    }
+
+    // Toggle Settings Menu
+    function toggleSettingsMenu() {
+      const menu = document.getElementById('settings-menu');
+      menu.classList.toggle('active');
+    }
+    
+    // Toggle Credits Menu with exit animation
+    function toggleCreditsMenu() {
+      const creditsMenu = document.getElementById('credits-menu');
+      const creditsContent = document.querySelector('.credits-content');
+      if (creditsMenu.classList.contains('active')) {
+        creditsContent.classList.add('exit');
+        setTimeout(() => {
+          creditsMenu.classList.remove('active');
+          creditsContent.classList.remove('exit');
+        }, 500);
+      } else {
+        creditsMenu.classList.add('active');
+      }
+    }
+
+    // Use a preset background video
+    function usePresetBackground(videoName, save = true) {
+      settings.ytBackground = '';
+      localStorage.removeItem('ytBackground');
+      document.getElementById('yt-bg').style.display = 'none';
+      const video = document.getElementById('video-bg');
+      video.style.display = 'block';
+      settings.background = videoName;
+      video.pause();
+      video.src = videoName;
+      video.load();
+      video.play();
+      if(save) {
+        localStorage.setItem('background', videoName);
+        updateActiveButtons('bg-', videoName.split('.')[0].toLowerCase().replace(/ /g, '-'));
+      }
+    }
+
+    // Set YouTube Background using URL from input
+    function setYoutubeBackground() {
+      const ytUrlInput = document.getElementById('yt-url');
+      const url = ytUrlInput.value.trim();
+      if(!url) return;
+      const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
+      if (match && match[2].length === 11) {
+        const videoId = match[2];
+        settings.ytBackground = url;
+        localStorage.setItem('ytBackground', url);
+        document.getElementById('video-bg').style.display = 'none';
+        const ytFrame = document.getElementById('yt-bg');
+        ytFrame.style.display = 'block';
+        ytFrame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`;
+      } else {
+        alert("Invalid YouTube URL.");
+      }
+    }
+
+    // Change Profile Image
+    function changeImage(imageName, save = true) {
+      settings.image = imageName;
+      const image = document.getElementById('image');
+      if (imageName === 'none') {
+        image.style.display = 'none';
+      } else {
+        image.style.display = 'block';
+        image.style.backgroundImage = `url('${imageName}')`;
+      }
+      if(save) {
+        localStorage.setItem('image', imageName);
+        updateActiveButtons('img-', imageName.split('.')[0].toLowerCase());
+      }
+    }
+
+    // Update Image Border Radius
+    function updateBorderRadius(radius, save = true) {
+      settings.borderRadius = radius;
+      document.getElementById('radius-value').textContent = radius;
+      const image = document.getElementById('image');
+      image.style.borderRadius = `${radius}%`;
+      if(save) {
+        localStorage.setItem('border-radius', radius);
+      }
+    }
+
+    // Change Theme
+    function changeTheme(themeName, save = true) {
+      settings.theme = themeName;
+      document.body.classList.remove('cosmic', 'forest', 'sunset', 'ruby', 'white');
+      document.body.classList.add(themeName);
+      if(save) {
+        localStorage.setItem('theme', themeName);
+        document.querySelectorAll('.theme-option').forEach(option => {
+          option.classList.remove('active');
+        });
+        document.querySelector(`.theme-option.${themeName}`).classList.add('active');
+      }
+    }
+
+    // Update active buttons based on prefix and value
+    function updateActiveButtons(prefix, value) {
+      document.querySelectorAll(`[id^="${prefix}"]`).forEach(button => {
+        button.classList.remove('active');
+      });
+      const selectedButton = document.getElementById(`${prefix}${value}`);
+      if (selectedButton) {
+        selectedButton.classList.add('active');
+      }
+    }
+
+    // Translation dictionaries for supported languages
+    const translations = {
+      en: {
+        title: "Home",
+        welcome: "Welcome to hell",
+        grade6: "6th",
+        grade5: "5th",
+        grade4: "4th",
+        grade3: "3rd",
+        quiz: "Quiz",
+        brevet: "Brevet Blanc",
+        customize: "Customize Your Experience",
+        selectTheme: "Select Theme",
+        backgroundSelection: "Background Selection",
+        ytUrl: "YouTube Background URL",
+        profileImage: "Profile Image",
+        imageBorder: "Image Border Radius",
+        language: "Language",
+        credits: "Credits",
+        noImage: "No Image",
+        setYoutube: "Set YouTube Background",
+        credits_dev: "Developed by",
+        credits_loading: "Loading animation from",
+        credits_idea: "Idea for the Undertale background from",
+        close: "Close"
+      },
+      fr: {
+        title: "Accueil",
+        welcome: "Bienvenue en enfer",
+        grade6: "6 ème",
+        grade5: "5 ème",
+        grade4: "4 ème",
+        grade3: "3 ème",
+        quiz: "Quiz",
+        brevet: "Brevet blanc",
+        customize: "Personnalisez votre expérience",
+        selectTheme: "Sélectionnez le thème",
+        backgroundSelection: "Sélection de fond",
+        ytUrl: "URL de fond YouTube",
+        profileImage: "Image de profil",
+        imageBorder: "Rayon de bordure de l'image",
+        language: "Langue",
+        credits: "Crédits",
+        noImage: "Pas d'image",
+        setYoutube: "Définir le fond YouTube",
+        credits_dev: "Développé par",
+        credits_loading: "Animation de chargement par",
+        credits_idea: "Idée pour le fond Undertale par",
+        close: "Fermer"
+      },
+      es: {
+        title: "Inicio",
+        welcome: "Bienvenido al infierno",
+        grade6: "6º",
+        grade5: "5º",
+        grade4: "4º",
+        grade3: "3º",
+        quiz: "Cuestionario",
+        brevet: "Examen Simulado",
+        customize: "Personaliza tu experiencia",
+        selectTheme: "Selecciona un tema",
+        backgroundSelection: "Selección de fondo",
+        ytUrl: "URL de fondo de YouTube",
+        profileImage: "Imagen de perfil",
+        imageBorder: "Radio del borde de la imagen",
+        language: "Idioma",
+        credits: "Créditos",
+        noImage: "Sin imagen",
+        setYoutube: "Establecer fondo de YouTube",
+        credits_dev: "Desarrollado por",
+        credits_loading: "Animación de carga de",
+        credits_idea: "Idea para el fondo de Undertale de",
+        close: "Cerrar"
+      },
+      de: {
+        title: "Startseite",
+        welcome: "Willkommen in der Hölle",
+        grade6: "6.",
+        grade5: "5.",
+        grade4: "4.",
+        grade3: "3.",
+        quiz: "Quiz",
+        brevet: "Probeabitur",
+        customize: "Passe dein Erlebnis an",
+        selectTheme: "Thema auswählen",
+        backgroundSelection: "Hintergrundauswahl",
+        ytUrl: "YouTube-Hintergrund-URL",
+        profileImage: "Profilbild",
+        imageBorder: "Bildrandradius",
+        language: "Sprache",
+        credits: "Credits",
+        noImage: "Kein Bild",
+        setYoutube: "YouTube-Hintergrund festlegen",
+        credits_dev: "Entwickelt von",
+        credits_loading: "Ladeanimation von",
+        credits_idea: "Idee für den Undertale-Hintergrund von",
+        close: "Schließen"
+      },
+      la: {
+        title: "Domus",
+        welcome: "Salve in inferis",
+        grade6: "Sexta",
+        grade5: "Quinta",
+        grade4: "Quarta",
+        grade3: "Tertia",
+        quiz: "Quaestio",
+        brevet: "Examen Blancus",
+        customize: "Experientiam tuam adde",
+        selectTheme: "Thematum Elige",
+        backgroundSelection: "Electio Fundi",
+        ytUrl: "URL Fundi YouTube",
+        profileImage: "Imago Profilis",
+        imageBorder: "Radius Imaginis",
+        language: "Lingua",
+        credits: "Gratiae",
+        noImage: "Nulla Imago",
+        setYoutube: "Constitue YouTube Fundum",
+        credits_dev: "Elaboratum a",
+        credits_loading: "Animatio oneris a",
+        credits_idea: "Idea pro fundo Undertale a",
+        close: "Claudere"
+      },
+      el: {
+        title: "Αρχική",
+        welcome: "Καλώς ήρθατε στην κόλαση",
+        grade6: "6η",
+        grade5: "5η",
+        grade4: "4η",
+        grade3: "3η",
+        quiz: "Κουίζ",
+        brevet: "Λευκό Πιστοποιητικό",
+        customize: "Προσαρμόστε την εμπειρία σας",
+        selectTheme: "Επιλέξτε θέμα",
+        backgroundSelection: "Επιλογή φόντου",
+        ytUrl: "URL φόντου YouTube",
+        profileImage: "Εικόνα προφίλ",
+        imageBorder: "Ακτίνα περιγράμματος εικόνας",
+        language: "Γλώσσα",
+        credits: "Πιστώσεις",
+        noImage: "Χωρίς εικόνα",
+        setYoutube: "Ορίστε το φόντο YouTube",
+        credits_dev: "Αναπτύχθηκε από",
+        credits_loading: "Κίνηση φόρτωσης από",
+        credits_idea: "Ιδέα για το φόντο Undertale από",
+        close: "Κλείσιμο"
+      }
+    };
+
+    // Change language function to update key elements and document title
+    function changeLanguage(lang) {
+      document.documentElement.lang = lang;
+      const dict = translations[lang];
+      
+      // Update document title
+      document.title = dict.title;
+      
+      // Update main text elements
+      document.getElementById('welcome-text').innerText = dict.welcome;
+      document.getElementById('link-grade6').innerText = dict.grade6;
+      document.getElementById('link-grade5').innerText = dict.grade5;
+      document.getElementById('link-grade4').innerText = dict.grade4;
+      document.getElementById('link-grade3').innerText = dict.grade3;
+      document.getElementById('link-quiz').innerText = dict.quiz;
+      document.getElementById('link-brevet').innerText = dict.brevet;
+      
+      // Update settings menu texts
+      document.getElementById('customize-label').innerText = dict.customize;
+      document.getElementById('select-theme-label').innerText = dict.selectTheme;
+      document.getElementById('background-selection-label').innerText = dict.backgroundSelection;
+      document.getElementById('yt-url-label').innerText = dict.ytUrl;
+      document.getElementById('profile-image-label').innerText = dict.profileImage;
+      document.getElementById('image-border-label').innerText = dict.imageBorder;
+      document.getElementById('language-label').innerText = dict.language;
+      
+      // Update buttons for YouTube and No Image
+      document.getElementById('set-youtube-btn').innerText = dict.setYoutube;
+      document.getElementById('img-none').innerText = dict.noImage;
+      
+      // Update credits header and texts
+      document.getElementById('credits-label').innerText = dict.credits;
+      document.getElementById('credits-dev-text').innerText = dict.credits_dev;
+      document.getElementById('credits-loading-text').innerText = dict.credits_loading;
+      document.getElementById('credits-idea-text').innerText = dict.credits_idea;
+      document.getElementById('credits-close').innerText = dict.close;
+      
+      // Optionally save language preference
+      localStorage.setItem('language', lang);
+    }
+
+    // Load saved language preference on page load
+    window.onload = () => {
+      const savedLanguage = localStorage.getItem('language') || 'en';
+      document.getElementById('language-select').value = savedLanguage;
+      changeLanguage(savedLanguage);
+      
+      const savedBackground = localStorage.getItem('background') || settings.background;
+      const savedImage = localStorage.getItem('image') || settings.image;
+      const savedRadius = localStorage.getItem('border-radius') || settings.borderRadius;
+      const savedTheme = localStorage.getItem('theme') || settings.theme;
+      const savedYt = localStorage.getItem('ytBackground') || '';
+      if(savedYt) {
+        document.getElementById('yt-url').value = savedYt;
+        setYoutubeBackground();
+      } else {
+        usePresetBackground(savedBackground, false);
+      }
+      
+      changeImage(savedImage, false);
+      updateBorderRadius(savedRadius, false);
+      changeTheme(savedTheme, false);
+      document.getElementById('radius-slider').value = savedRadius;
+      document.getElementById('radius-value').textContent = savedRadius;
+      updateActiveButtons('bg-', savedBackground.split('.')[0].toLowerCase().replace(/ /g, '-'));
+      updateActiveButtons('img-', savedImage.split('.')[0].toLowerCase());
+      document.querySelectorAll('.theme-option').forEach(option => {
+        option.classList.remove('active');
+      });
+      document.querySelector(`.theme-option.${savedTheme}`).classList.add('active');
+
+      setTimeout(() => {
+        const loader = document.getElementById('loader');
+        loader.style.opacity = 0;
+        setTimeout(() => {
+          loader.style.display = 'none';
+          const content = document.getElementById('content');
+          content.style.opacity = 1;
+          content.classList.add('fade-in');
+        }, 600);
+      }, 1500);
+
+      // Split credit anchor texts into letter spans
+      document.querySelectorAll('.credit-line a').forEach(anchor => {
+        const text = anchor.textContent;
+        anchor.textContent = '';
+        [...text].forEach((char, index) => {
+          const span = document.createElement('span');
+          span.classList.add('letter');
+          span.textContent = char;
+          span.style.animationDelay = `${index * 0.1}s`;
+          anchor.appendChild(span);
+        });
+      });
+    };
+
+    // Add 3D tilt effect to links
+    document.querySelectorAll('.link').forEach(link => {
+      link.addEventListener('mousemove', function(e) {
+        const rect = this.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const tiltX = (centerY - y) / 10;
+        const tiltY = (x - centerX) / 10;
+        this.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(-5px)`;
+      });
+      link.addEventListener('mouseleave', function() {
+        this.style.transform = '';
+      });
+    });
+
+    // Add 3D tilt effect to image container
+    document.querySelectorAll('.image-container').forEach(container => {
+      container.addEventListener('mousemove', function(e) {
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const tiltX = (centerY - y) / 10;
+        const tiltY = (x - centerX) / 10;
+        container.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+      });
+      container.addEventListener('mouseleave', function() {
+        container.style.transform = '';
+      });
+    });
+
+    console.log("I'm spying on you.");
+    setTimeout(() => {
+      console.log("Just kidding or am I? (Yes)");
+    }, 1000);
+  </script>
+</body>
+</html>

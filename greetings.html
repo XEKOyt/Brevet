@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <!-- The title will be updated via JavaScript based on language selection -->
-  <title>Home</title>
+  <title>Accueil</title>
   <link id="favicon" rel="icon" href="Logo/frame_000_delay.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -582,12 +581,12 @@
     
     <!-- Links Container -->
     <div class="links-container">
-      <div class="link" onclick="redirectTo('6/home.html')"><span id="link-grade6">6th</span></div>
-      <div class="link" onclick="redirectTo('5/home.html')"><span id="link-grade5">5th</span></div>
-      <div class="link" onclick="redirectTo('4/home.html')"><span id="link-grade4">4th</span></div>
-      <div class="link" onclick="redirectTo('3/home.html')"><span id="link-grade3">3rd</span></div>
+      <div class="link" onclick="redirectTo('6/home.html')"><span id="link-grade6">6 ème</span></div>
+      <div class="link" onclick="redirectTo('5/home.html')"><span id="link-grade5">5 ème</span></div>
+      <div class="link" onclick="redirectTo('4/home.html')"><span id="link-grade4">4 ème</span></div>
+      <div class="link" onclick="redirectTo('3/home.html')"><span id="link-grade3">3 ème</span></div>
       <div class="link" onclick="redirectTo('quiz.html')"><span id="link-quiz">Quiz</span></div>
-      <div class="link" onclick="redirectTo('brevet-blanc.html')"><span id="link-brevet">Brevet Blanc</span></div>
+      <div class="link" onclick="redirectTo('Brevet/pdf-viewer.html')"><span id="link-brevet">Brevet blanc</span></div>
     </div>
   </div>
 
@@ -625,7 +624,7 @@
       <div class="settings-section">
         <p id="yt-url-label">YouTube Background URL</p>
         <input type="text" id="yt-url" placeholder="Enter YouTube URL" />
-        <button id="set-youtube-btn" onclick="setYoutubeBackground()">Set YouTube Background</button>
+        <button onclick="setYoutubeBackground()">Set YouTube Background</button>
       </div>
       
       <div class="settings-section">
@@ -664,16 +663,10 @@
   <div id="credits-menu" class="credits-menu">
     <div class="credits-content">
       <h2 id="credits-label">Credits</h2>
-      <p id="credits-dev">
-        <span id="credits-dev-text">Developed by</span> <a href="https://guns.lol/XEKO_YT" target="_blank">XEKO</a>.
-      </p>
-      <p id="credits-loading">
-        <span id="credits-loading-text">Loading animation from</span> <a href="https://uiverse.io/profile/mrpumps31232" target="_blank">mrpumps31232</a> on uiverse.io.
-      </p>
-      <p id="credits-idea">
-        <span id="credits-idea-text">Idea for the Undertale background from</span> <a href="https://guns.lol/frozen2" target="_blank">Frozen</a>.
-      </p>
-      <button id="credits-close" class="close-btn" onclick="toggleCreditsMenu()">Close</button>
+      <p class="credit-line">Developed by <a href="https://guns.lol/XEKO_YT" target="_blank">XEKO</a>.</p>
+      <p class="credit-line">Loading animation from <a href="https://uiverse.io/profile/mrpumps31232" target="_blank">mrpumps31232</a> on uiverse.io.</p>
+      <p class="credit-line">Idea for the Undertale background from <a href="https://guns.lol/frozen2" target="_blank">Frozen</a>.</p>
+      <button class="close-btn" onclick="toggleCreditsMenu()">Close</button>
     </div>
   </div>
 
@@ -820,7 +813,6 @@
     // Translation dictionaries for supported languages
     const translations = {
       en: {
-        title: "Home",
         welcome: "Welcome to hell",
         grade6: "6th",
         grade5: "5th",
@@ -835,16 +827,9 @@
         profileImage: "Profile Image",
         imageBorder: "Image Border Radius",
         language: "Language",
-        credits: "Credits",
-        noImage: "No Image",
-        setYoutube: "Set YouTube Background",
-        credits_dev: "Developed by",
-        credits_loading: "Loading animation from",
-        credits_idea: "Idea for the Undertale background from",
-        close: "Close"
+        credits: "Credits"
       },
       fr: {
-        title: "Accueil",
         welcome: "Bienvenue en enfer",
         grade6: "6 ème",
         grade5: "5 ème",
@@ -859,16 +844,9 @@
         profileImage: "Image de profil",
         imageBorder: "Rayon de bordure de l'image",
         language: "Langue",
-        credits: "Crédits",
-        noImage: "Pas d'image",
-        setYoutube: "Définir le fond YouTube",
-        credits_dev: "Développé par",
-        credits_loading: "Animation de chargement par",
-        credits_idea: "Idée pour le fond Undertale par",
-        close: "Fermer"
+        credits: "Crédits"
       },
       es: {
-        title: "Inicio",
         welcome: "Bienvenido al infierno",
         grade6: "6º",
         grade5: "5º",
@@ -883,16 +861,9 @@
         profileImage: "Imagen de perfil",
         imageBorder: "Radio del borde de la imagen",
         language: "Idioma",
-        credits: "Créditos",
-        noImage: "Sin imagen",
-        setYoutube: "Establecer fondo de YouTube",
-        credits_dev: "Desarrollado por",
-        credits_loading: "Animación de carga de",
-        credits_idea: "Idea para el fondo de Undertale de",
-        close: "Cerrar"
+        credits: "Créditos"
       },
       de: {
-        title: "Startseite",
         welcome: "Willkommen in der Hölle",
         grade6: "6.",
         grade5: "5.",
@@ -907,16 +878,9 @@
         profileImage: "Profilbild",
         imageBorder: "Bildrandradius",
         language: "Sprache",
-        credits: "Credits",
-        noImage: "Kein Bild",
-        setYoutube: "YouTube-Hintergrund festlegen",
-        credits_dev: "Entwickelt von",
-        credits_loading: "Ladeanimation von",
-        credits_idea: "Idee für den Undertale-Hintergrund von",
-        close: "Schließen"
+        credits: "Credits"
       },
       la: {
-        title: "Domus",
         welcome: "Salve in inferis",
         grade6: "Sexta",
         grade5: "Quinta",
@@ -931,16 +895,9 @@
         profileImage: "Imago Profilis",
         imageBorder: "Radius Imaginis",
         language: "Lingua",
-        credits: "Gratiae",
-        noImage: "Nulla Imago",
-        setYoutube: "Constitue YouTube Fundum",
-        credits_dev: "Elaboratum a",
-        credits_loading: "Animatio oneris a",
-        credits_idea: "Idea pro fundo Undertale a",
-        close: "Claudere"
+        credits: "Gratiae"
       },
       el: {
-        title: "Αρχική",
         welcome: "Καλώς ήρθατε στην κόλαση",
         grade6: "6η",
         grade5: "5η",
@@ -955,25 +912,14 @@
         profileImage: "Εικόνα προφίλ",
         imageBorder: "Ακτίνα περιγράμματος εικόνας",
         language: "Γλώσσα",
-        credits: "Πιστώσεις",
-        noImage: "Χωρίς εικόνα",
-        setYoutube: "Ορίστε το φόντο YouTube",
-        credits_dev: "Αναπτύχθηκε από",
-        credits_loading: "Κίνηση φόρτωσης από",
-        credits_idea: "Ιδέα για το φόντο Undertale από",
-        close: "Κλείσιμο"
+        credits: "Πιστώσεις"
       }
     };
 
-    // Change language function to update key elements and document title
+    // Change language function to update innerText of key elements
     function changeLanguage(lang) {
       document.documentElement.lang = lang;
       const dict = translations[lang];
-      
-      // Update document title
-      document.title = dict.title;
-      
-      // Update main text elements
       document.getElementById('welcome-text').innerText = dict.welcome;
       document.getElementById('link-grade6').innerText = dict.grade6;
       document.getElementById('link-grade5').innerText = dict.grade5;
@@ -981,8 +927,6 @@
       document.getElementById('link-grade3').innerText = dict.grade3;
       document.getElementById('link-quiz').innerText = dict.quiz;
       document.getElementById('link-brevet').innerText = dict.brevet;
-      
-      // Update settings menu texts
       document.getElementById('customize-label').innerText = dict.customize;
       document.getElementById('select-theme-label').innerText = dict.selectTheme;
       document.getElementById('background-selection-label').innerText = dict.backgroundSelection;
@@ -990,19 +934,7 @@
       document.getElementById('profile-image-label').innerText = dict.profileImage;
       document.getElementById('image-border-label').innerText = dict.imageBorder;
       document.getElementById('language-label').innerText = dict.language;
-      
-      // Update buttons for YouTube and No Image
-      document.getElementById('set-youtube-btn').innerText = dict.setYoutube;
-      document.getElementById('img-none').innerText = dict.noImage;
-      
-      // Update credits header and texts
       document.getElementById('credits-label').innerText = dict.credits;
-      document.getElementById('credits-dev-text').innerText = dict.credits_dev;
-      document.getElementById('credits-loading-text').innerText = dict.credits_loading;
-      document.getElementById('credits-idea-text').innerText = dict.credits_idea;
-      document.getElementById('credits-close').innerText = dict.close;
-      
-      // Optionally save language preference
       localStorage.setItem('language', lang);
     }
 

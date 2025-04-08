@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clicker Game</title>
+  <style>
+    /* Reset and basic styles */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      text-align: center;
+    }
+
+    /* Header style */
+    header {
+      background-color: #4CAF50;
+      color: white;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    /* Score display styling */
+    #score {
+      font-size: 3em;
+      margin: 20px 0;
+    }
+
+    /* Click button styling */
+    button {
+      padding: 15px 30px;
+      font-size: 1.5em;
+      color: white;
+      background-color: #4CAF50;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    /* Button hover effect */
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Clicker Game</h1>
+  </header>
+  <div>
+    <p>Your Score:</p>
+    <div id="score">0</div>
+    <button id="clickButton">Click Me!</button>
+  </div>
+
+  <script>
+    // Initialize the score variable
+    let score = 0;
+
+    // Grab the score display and button elements by their IDs
+    const scoreDisplay = document.getElementById("score");
+    const clickButton = document.getElementById("clickButton");
+
+    // Update the score display on the page
+    function updateScore() {
+      scoreDisplay.textContent = score;
+    }
+
+    // Add an event listener to the button for the click event
+    clickButton.addEventListener("click", function() {
+      score++;         // Increase score by 1 on each click
+      updateScore();   // Update the displayed score
+    });
+  </script>
+</body>
+</html>

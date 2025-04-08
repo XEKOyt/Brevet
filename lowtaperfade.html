@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Accueil</title>
+  <link id="favicon" rel="icon" href="Logo/frame_000_delay.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6C63FF;
+      --secondary: #4A45B2;
+      --accent: #00E5FF;
+      --dark: #0d0d0d;
+      --light: #fff;
+      --card-bg: rgba(20, 20, 30, 0.6);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --transition: 0.3s ease;
+      --text-shadow: rgba(0, 0, 0, 0.3);
+      --btn-glow: rgba(108, 99, 255, 0.7);
+    }
+    /* Theme Colors for each theme */
+    .cosmic {
+      --primary: #6C63FF;
+      --secondary: #4A45B2;
+      --accent: #00E5FF;
+      --text-shadow: rgba(0, 0, 0, 0.3);
+      --btn-glow: rgba(108, 99, 255, 0.7);
+    }
+    .forest { /* … */ }
+    .sunset { /* … */ }
+    .ruby { /* … */ }
+    .white { /* … */ }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      color: var(--light);
+      transition: all var(--transition);
+      overflow-x: hidden;
+    }
+    /* Video Background */
+    #video-bg {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: -2;
+    }
+    /* YouTube Background iframe */
+    #yt-bg {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -2; border: none; display: none;
+    }
+    /* Overlay */
+    .overlay {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.7));
+      z-index: -1;
+    }
+    .particles {
+      position: fixed; width: 100%; height: 100%;
+      z-index: -1;
+      background: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: moveParticles 30s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes moveParticles {
+      0% { background-position: 0 0; }
+      100% { background-position: 100px 100px; }
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      gap: 30px;
+      padding: 20px;
+      position: relative;
+    }
+    /* Top Section with Text and Image */
+    .top-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+      gap: 25px;
+      text-align: center;
+    }
+    .top-section .text {
+      font-size: 3rem;
+      font-weight: 700;
+      background: linear-gradient(45deg, var(--light) 30%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 15px var(--text-shadow);
+      /* Remove CSS animation and set initial opacity for GSAP */
+      opacity: 0;
+    }
+    .top-section .image-container {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      transform-style: preserve-3d;
+      transition: transform 0.6s ease;
+    }
+    .top-section .image {
+      width: 100%;
+      height: 100%;
+      border-radius: 20%;
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      transition: all var(--transition);
+      transform: translateZ(20px);
+      border: 2px solid var(--card-border);
+    }
+    /* Other styles (links, loader, settings, credits, etc.) remain unchanged */
+    /* … (omitted for brevity) … */
+  </style>
+</head>
+<body>
+  <!-- Video Background, YouTube iframe, overlay, particles, loader, content, settings, credits -->
+  <video id="video-bg" class="video-background" autoplay loop muted playsinline>
+    <source src="moon lake.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <iframe id="yt-bg"></iframe>
+  <div class="overlay"></div>
+  <div class="particles"></div>
+  <div id="loader" class="loader">
+    <div class="loading-wave">
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+    </div>
+  </div>
+  <div id="content" class="container">
+    <div class="top-section">
+      <!-- The heading that GSAP will animate -->
+      <div class="text">Welcome to hell</div>
+      <div class="image-container">
+        <div class="image" id="image"></div>
+      </div>
+    </div>
+    <!-- Links Container -->
+    <div class="links-container">
+      <div class="link" onclick="redirectTo('6/home.html')"><span>6 ème</span></div>
+      <div class="link" onclick="redirectTo('5/home.html')"><span>5 ème</span></div>
+      <div class="link" onclick="redirectTo('4/home.html')"><span>4 ème</span></div>
+      <div class="link" onclick="redirectTo('3/home.html')"><span>3 ème</span></div>
+      <div class="link" onclick="redirectTo('quiz.html')"><span>Quiz</span></div>
+      <div class="link" onclick="redirectTo('brevet-blanc.html')"><span>Brevet blanc</span></div>
+    </div>
+  </div>
+  <!-- Settings and Credits Buttons & Menus (unchanged) -->
+  <button class="settings-btn" onclick="toggleSettingsMenu()">⚙️</button>
+  <button class="credits-btn" onclick="toggleCreditsMenu()">ℹ️</button>
+  <div id="settings-menu" class="settings-menu">
+    <div class="settings-content">
+      <h2>Customize Your Experience</h2>
+      <!-- Settings content… -->
+      <button class="close-btn" onclick="toggleSettingsMenu()">Save & Close</button>
+    </div>
+  </div>
+  <div id="credits-menu" class="credits-menu">
+    <div class="credits-content">
+      <h2>Credits</h2>
+      <p class="credit-line">Developed by <a href="https://guns.lol/XEKO_YT" target="_blank">XEKO</a>.</p>
+      <p class="credit-line">Loading animation from <a href="https://uiverse.io/profile/mrpumps31232" target="_blank">mrpumps31232</a> on uiverse.io.</p>
+      <p class="credit-line">Idea for the Undertale background from <a href="https://guns.lol/frozen2" target="_blank">Frozen</a>.</p>
+      <button class="close-btn" onclick="toggleCreditsMenu()">Close</button>
+    </div>
+  </div>
+  <!-- GSAP Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js"></script>
+  <script>
+    // Favicon animation and other functions (settings, credits, background, etc.) remain unchanged.
+    const totalFrames = 164;
+    const frameDelay = 50;
+    let currentFrame = 0;
+    const favicon = document.getElementById('favicon');
+    function updateFavicon() {
+      const frameNumber = currentFrame.toString().padStart(3, '0');
+      favicon.href = `Logo/frame_${frameNumber}_delay.png`;
+      currentFrame = (currentFrame + 1) % totalFrames;
+    }
+    setInterval(updateFavicon, frameDelay);
+    
+    const settings = {
+      background: 'moon lake.mp4',
+      image: 'freaky_memes.jpg',
+      borderRadius: 20,
+      theme: 'cosmic',
+      ytBackground: ''
+    };
+    function redirectTo(path) {
+      document.body.style.opacity = 0;
+      setTimeout(() => { window.location.href = path; }, 300);
+    }
+    function toggleSettingsMenu() {
+      document.getElementById('settings-menu').classList.toggle('active');
+    }
+    function toggleCreditsMenu() {
+      const creditsMenu = document.getElementById('credits-menu');
+      const creditsContent = document.querySelector('.credits-content');
+      if (creditsMenu.classList.contains('active')) {
+        creditsContent.classList.add('exit');
+        setTimeout(() => {
+          creditsMenu.classList.remove('active');
+          creditsContent.classList.remove('exit');
+        }, 500);
+      } else {
+        creditsMenu.classList.add('active');
+      }
+    }
+    function usePresetBackground(videoName, save = true) {
+      settings.ytBackground = '';
+      localStorage.removeItem('ytBackground');
+      document.getElementById('yt-bg').style.display = 'none';
+      const video = document.getElementById('video-bg');
+      video.style.display = 'block';
+      settings.background = videoName;
+      video.pause();
+      video.src = videoName;
+      video.load();
+      video.play();
+      if (save) {
+        localStorage.setItem('background', videoName);
+        updateActiveButtons('bg-', videoName.split('.')[0].toLowerCase().replace(/ /g, '-'));
+      }
+    }
+    function setYoutubeBackground() {
+      const ytUrlInput = document.getElementById('yt-url');
+      const url = ytUrlInput.value.trim();
+      if (!url) return;
+      const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
+      if (match && match[2].length === 11) {
+        const videoId = match[2];
+        settings.ytBackground = url;
+        localStorage.setItem('ytBackground', url);
+        document.getElementById('video-bg').style.display = 'none';
+        const ytFrame = document.getElementById('yt-bg');
+        ytFrame.style.display = 'block';
+        ytFrame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`;
+      } else { alert("Invalid YouTube URL."); }
+    }
+    function changeImage(imageName, save = true) {
+      settings.image = imageName;
+      const image = document.getElementById('image');
+      if (imageName === 'none') {
+        image.style.display = 'none';
+      } else {
+        image.style.display = 'block';
+        image.style.backgroundImage = `url('${imageName}')`;
+      }
+      if (save) {
+        localStorage.setItem('image', imageName);
+        updateActiveButtons('img-', imageName.split('.')[0].toLowerCase());
+      }
+    }
+    function updateBorderRadius(radius, save = true) {
+      settings.borderRadius = radius;
+      document.getElementById('radius-value').textContent = radius;
+      const image = document.getElementById('image');
+      image.style.borderRadius = `${radius}%`;
+      if (save) { localStorage.setItem('border-radius', radius); }
+    }
+    function changeTheme(themeName, save = true) {
+      settings.theme = themeName;
+      document.body.classList.remove('cosmic', 'forest', 'sunset', 'ruby', 'white');
+      document.body.classList.add(themeName);
+      if (save) {
+        localStorage.setItem('theme', themeName);
+        document.querySelectorAll('.theme-option').forEach(option => { option.classList.remove('active'); });
+        document.querySelector(`.theme-option.${themeName}`).classList.add('active');
+      }
+    }
+    function updateActiveButtons(prefix, value) {
+      document.querySelectorAll(`[id^="${prefix}"]`).forEach(button => { button.classList.remove('active'); });
+      const selectedButton = document.getElementById(`${prefix}${value}`);
+      if (selectedButton) { selectedButton.classList.add('active'); }
+    }
+    window.onload = () => {
+      const savedBackground = localStorage.getItem('background') || settings.background;
+      const savedImage = localStorage.getItem('image') || settings.image;
+      const savedRadius = localStorage.getItem('border-radius') || settings.borderRadius;
+      const savedTheme = localStorage.getItem('theme') || settings.theme;
+      const savedYt = localStorage.getItem('ytBackground') || '';
+      if (savedYt) {
+        document.getElementById('yt-url').value = savedYt;
+        setYoutubeBackground();
+      } else {
+        usePresetBackground(savedBackground, false);
+      }
+      changeImage(savedImage, false);
+      updateBorderRadius(savedRadius, false);
+      changeTheme(savedTheme, false);
+      document.getElementById('radius-slider').value = savedRadius;
+      document.getElementById('radius-value').textContent = savedRadius;
+      updateActiveButtons('bg-', savedBackground.split('.')[0].toLowerCase().replace(/ /g, '-'));
+      updateActiveButtons('img-', savedImage.split('.')[0].toLowerCase());
+      document.querySelectorAll('.theme-option').forEach(option => { option.classList.remove('active'); });
+      document.querySelector(`.theme-option.${savedTheme}`).classList.add('active');
+
+      setTimeout(() => {
+        const loader = document.getElementById('loader');
+        loader.style.opacity = 0;
+        setTimeout(() => {
+          loader.style.display = 'none';
+          const content = document.getElementById('content');
+          content.style.opacity = 1;
+          content.classList.add('fade-in');
+        }, 600);
+      }, 1500);
+
+      // Split each credit anchor text into individual letter spans with staggered delay
+      document.querySelectorAll('.credit-line a').forEach(anchor => {
+        const text = anchor.textContent;
+        anchor.textContent = '';
+        [...text].forEach((char, index) => {
+          const span = document.createElement('span');
+          span.classList.add('letter');
+          span.textContent = char;
+          span.style.animationDelay = `${index * 0.1}s`;
+          anchor.appendChild(span);
+        });
+      });
+
+      // Animate the "Welcome to hell" text with GSAP
+      gsap.fromTo(".top-section .text", 
+        { opacity: 0, y: -50 },
+        { opacity: 1, y: 0, duration: 1, ease: "bounce.out" }
+      );
+    };
+
+    document.querySelectorAll('.link').forEach(link => {
+      link.addEventListener('mousemove', function(e) {
+        const rect = this.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const tiltX = (centerY - y) / 10;
+        const tiltY = (x - centerX) / 10;
+        this.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(-5px)`;
+      });
+      link.addEventListener('mouseleave', function() {
+        this.style.transform = '';
+      });
+    });
+
+    document.querySelectorAll('.image-container').forEach(container => {
+      container.addEventListener('mousemove', function(e) {
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const tiltX = (centerY - y) / 10;
+        const tiltY = (x - centerX) / 10;
+        container.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+      });
+      container.addEventListener('mouseleave', function() {
+        container.style.transform = '';
+      });
+    });
+
+    console.log("I'm spying on you.");
+    setTimeout(() => { console.log("Just kidding or am I? (Yes)"); }, 1000);
+  </script>
+</body>
+</html>

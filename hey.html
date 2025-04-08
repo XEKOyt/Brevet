@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Logo Animation</title>
+    <link id="favicon" rel="icon" href="Logo/frame_000_delay.png" type="image/png">
+</head>
+<body>
+    <script>
+        const totalFrames = 164;
+        const frameDelay = 50;
+        let currentFrame = 0;
+        const favicon = document.getElementById('favicon');
+        function updateFavicon() {
+            const frameNumber = currentFrame.toString().padStart(3, '0');
+            favicon.href = `Logo/frame_${frameNumber}_delay.png`;
+            currentFrame = (currentFrame + 1) % totalFrames;
+        }
+        setInterval(updateFavicon, frameDelay);
+    </script>
+</body>
+</html>

@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Accueil</title>
+  <link id="favicon" rel="icon" href="Logo/frame_000_delay.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6C63FF;
+      --secondary: #4A45B2;
+      --accent: #00E5FF;
+      --dark: #0d0d0d;
+      --light: #fff;
+      --card-bg: rgba(20, 20, 30, 0.6);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --btn-glow: rgba(0, 229, 255, 0.7);
+      --transition: 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      color: var(--light);
+      transition: all var(--transition);
+      overflow-x: hidden;
+    }
+
+    /* Video Background */
+    .video-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -2;
+    }
+
+    /* Overlay */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.7));
+      z-index: -1;
+    }
+
+    .particles {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: moveParticles 30s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes moveParticles {
+      0% { background-position: 0 0; }
+      100% { background-position: 100px 100px; }
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      gap: 30px;
+      padding: 20px;
+      position: relative;
+    }
+
+    /* Top Section with Text and Image */
+    .top-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+      gap: 25px;
+      text-align: center;
+    }
+
+    .top-section .text {
+      font-size: 3rem;
+      font-weight: 700;
+      background: linear-gradient(45deg, var(--light) 30%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+
+    .top-section .image-container {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      transform-style: preserve-3d;
+      transition: transform 0.6s ease;
+    }
+
+    .top-section .image {
+      width: 100%;
+      height: 100%;
+      border-radius: 20%;
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      transition: all var(--transition);
+      transform: translateZ(20px);
+      border: 2px solid var(--card-border);
+    }
+
+    .image-container:hover {
+      transform: rotateX(10deg) rotateY(10deg);
+    }
+
+    .links-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 960px;
+    }
+
+    .link {
+      font-size: 1.5rem;
+      font-weight: 500;
+      padding: 20px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid var(--card-border);
+      cursor: pointer;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+      transition: all var(--transition);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .link::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+      opacity: 0;
+      transform: scale(0.5);
+      transition: transform 0.6s ease, opacity 0.6s ease;
+    }
+
+    .link:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 229, 255, 0.2);
+      border-color: var(--accent);
+    }
+
+    .link:hover::before {
+      opacity: 0.1;
+      transform: scale(1);
+    }
+
+    /* Loader */
+    .loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--dark);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.6s ease;
+    }
+
+    .loader-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      flex-direction: column;
+    }
+
+    .loader-text {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      letter-spacing: 3px;
+      color: var(--accent);
+    }
+
+    .dots {
+      display: flex;
+      gap: 10px;
+    }
+
+    .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background-color: var(--accent);
+      animation: bounce 1s infinite ease-in-out;
+    }
+
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    #content {
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.8s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Settings Menu */
+    .settings-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      background-color: var(--card-bg);
+      color: white;
+      border: 1px solid var(--card-border);
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.5rem;
+      transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .settings-btn:hover {
+      transform: rotate(30deg);
+      background-color: var(--secondary);
+      box-shadow: 0 5px 20px rgba(0, 229, 255, 0.3);
+    }
+
+    .settings-menu {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: white;
+      justify-content: center;
+      align-items: center;
+      z-index: 99;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .settings-content {
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 20px;
+      max-width: 600px;
+      width: 90%;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    }
+
+    .settings-menu.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .settings-menu h2 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+      color: var(--accent);
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    .settings-menu h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background: linear-gradient(to right, transparent, var(--accent), transparent);
+    }
+
+    .settings-section {
+      margin-bottom: 25px;
+    }
+
+    .settings-section p {
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+      opacity: 0.8;
+    }
+
+    .settings-menu button {
+      font-size: 1rem;
+      padding: 10px 20px;
+      background: var(--card-bg);
+      border-radius: 12px;
+      margin: 8px;
+      cursor: pointer;
+      color: white;
+      border: 1px solid var(--card-border);
+      transition: all var(--transition);
+    }
+
+    .settings-menu button:hover {
+      transform: translateY(-3px);
+      background: var(--secondary);
+      box-shadow: 0 5px 15px rgba(0, 229, 255, 0.2);
+    }
+
+    .settings-menu button.active {
+      background: var(--primary);
+      border-color: var(--accent);
+      box-shadow: 0 0 15px var(--btn-glow);
+    }
+
+    .close-btn {
+      margin-top: 20px;
+      background: var(--accent) !important;
+      color: var(--dark) !important;
+      font-weight: 600;
+    }
+
+    /* Border Radius Input */
+    .slider-container {
+      margin-top: 20px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .range-value {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+
+    .slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 5px;
+      background: var(--dark);
+      outline: none;
+      opacity: 0.7;
+      transition: opacity .2s;
+    }
+
+    .slider:hover {
+      opacity: 1;
+    }
+
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+      box-shadow: 0 0 10px var(--accent);
+    }
+
+    /* Theme Selector */
+    .theme-selector {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .theme-option {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all var(--transition);
+      border: 2px solid transparent;
+    }
+
+    .theme-option:hover {
+      transform: scale(1.2);
+    }
+
+    .theme-option.active {
+      border: 2px solid white;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .top-section .text {
+        font-size: 2.2rem;
+      }
+      
+      .top-section .image-container {
+        width: 120px;
+        height: 120px;
+      }
+      
+      .link {
+        font-size: 1.3rem;
+        padding: 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .top-section .text {
+        font-size: 1.8rem;
+      }
+      
+      .settings-menu h2 {
+        font-size: 1.6rem;
+      }
+    }
+
+    /* Animation for grade level */
+    .link span {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Theme Colors */
+    .cosmic {
+      --primary: #6C63FF;
+      --secondary: #4A45B2;
+      --accent: #00E5FF;
+    }
+
+    .forest {
+      --primary: #4CAF50;
+      --secondary: #388E3C;
+      --accent: #8BC34A;
+    }
+
+    .sunset {
+      --primary: #FF9800;
+      --secondary: #F57C00;
+      --accent: #FFEB3B;
+    }
+
+    .ruby {
+      --primary: #F44336;
+      --secondary: #D32F2F;
+      --accent: #FF9E80;
+    }
+
+    .white {
+      --primary: #ffffff50;
+      --secondary: #ffffff50;
+      --accent: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <!-- Video Background -->
+  <video id="background-video" class="video-background" autoplay loop muted playsinline>
+    <source src="moon lake.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <div class="overlay"></div>
+  <div class="particles"></div>
+
+  <div id="loader" class="loader">
+    <div class="loader-content">
+      <div class="dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <div class="loader-text">LOADING</div>
+    </div>
+  </div>
+
+  <div id="content" class="container">
+    <div class="top-section">
+      <div class="text">Welcome to hell</div>
+      <div class="image-container">
+        <div class="image" id="image"></div>
+      </div>
+    </div>
+    
+    <div class="links-container">
+      <div class="link" onclick="redirectTo('6/home.html')"><span>6 ème</span></div>
+      <div class="link" onclick="redirectTo('5/home.html')"><span>5 ème</span></div>
+      <div class="link" onclick="redirectTo('4/home.html')"><span>4 ème</span></div>
+      <div class="link" onclick="redirectTo('3/home.html')"><span>3 ème</span></div>
+    </div>
+  </div>
+
+  <!-- Settings Button -->
+  <button class="settings-btn" onclick="toggleSettingsMenu()">⚙️</button>
+
+  <!-- Settings Menu -->
+  <div id="settings-menu" class="settings-menu">
+    <div class="settings-content">
+      <h2>Customize Your Experience</h2>
+      
+      <div class="settings-section">
+        <p>Select Theme</p>
+        <div class="theme-selector">
+          <div class="theme-option cosmic active" style="background: linear-gradient(45deg, #6C63FF, #00E5FF)" onclick="changeTheme('cosmic')"></div>
+          <div class="theme-option forest" style="background: linear-gradient(45deg, #4CAF50, #8BC34A)" onclick="changeTheme('forest')"></div>
+          <div class="theme-option sunset" style="background: linear-gradient(45deg, #FF9800, #FFEB3B)" onclick="changeTheme('sunset')"></div>
+          <div class="theme-option ruby" style="background: linear-gradient(45deg, #F44336, #FF9E80)" onclick="changeTheme('ruby')"></div>
+          <div class="theme-option white" style="background: linear-gradient(45deg, #ffffff, #ffffff)" onclick="changeTheme('white')"></div>
+        </div>
+      </div>
+      
+      <div class="settings-section">
+        <p>Background Selection</p>
+        <button id="bg-moon" class="active" onclick="changeBackground('moon lake.mp4')">Lake</button>
+        <button id="bg-balls" onclick="changeBackground('balls.mp4')">Rain</button>
+        <button id="bg-stars" onclick="changeBackground('stars.mp4')">Stars</button>
+        <button id="bg-totoro" onclick="changeBackground('Totoro.mp4')">Totoro</button>
+        <button id="bg-night_city" onclick="changeBackground('Night city.mp4')">Night city</button>
+        <button id="bg-Undertale" onclick="changeBackground('Undertale.mp4')">Undertale</button>
+      </div>
+      
+      <div class="settings-section">
+        <p>Profile Image</p>
+        <button id="img-freaky" class="active" onclick="changeImage('freaky_memes.jpg')">Freaky bob</button>
+        <button id="img-no" onclick="changeImage('No.Png')">Pain</button>
+        <button id="img-none" onclick="changeImage('none')">No Image</button>
+      </div>
+      
+      <div class="settings-section">
+        <p>Image Border Radius</p>
+        <div class="slider-container">
+          <div class="range-value"><span id="radius-value">20</span>%</div>
+          <input type="range" min="0" max="50" value="20" class="slider" id="radius-slider" oninput="updateBorderRadius(this.value)">
+        </div>
+      </div>
+      
+      <button class="close-btn" onclick="toggleSettingsMenu()">Save & Close</button>
+    </div>
+  </div>
+
+  <script>
+    //car thingy
+    const totalFrames = 164;
+        const frameDelay = 50;
+        let currentFrame = 0;
+        const favicon = document.getElementById('favicon');
+        function updateFavicon() {
+            const frameNumber = currentFrame.toString().padStart(3, '0');
+            favicon.href = `Logo/frame_${frameNumber}_delay.png`;
+            currentFrame = (currentFrame + 1) % totalFrames;
+        }
+        setInterval(updateFavicon, frameDelay);
+
+
+    // Current settings tracking
+    const settings = {
+      background: 'moon lake.mp4',
+      image: 'freaky_memes.jpg',
+      borderRadius: 20,
+      theme: 'cosmic'
+    };
+    
+    function redirectTo(path) {
+      // Add a brief flash transition
+      document.body.style.opacity = 0;
+      setTimeout(() => {
+        window.location.href = path;
+      }, 300);
+    }
+
+    window.onload = () => {
+      // Load saved settings
+      const savedBackground = localStorage.getItem('background') || settings.background;
+      const savedImage = localStorage.getItem('image') || settings.image;
+      const savedRadius = localStorage.getItem('border-radius') || settings.borderRadius;
+      const savedTheme = localStorage.getItem('theme') || settings.theme;
+
+      // Apply settings
+      changeBackground(savedBackground, false);
+      changeImage(savedImage, false);
+      updateBorderRadius(savedRadius, false);
+      changeTheme(savedTheme, false);
+      
+      // Update UI to match saved settings
+      document.getElementById('radius-slider').value = savedRadius;
+      document.getElementById('radius-value').textContent = savedRadius;
+      
+      // Update active buttons
+      updateActiveButtons('bg-', savedBackground.split('.')[0].replace(' ', '-'));
+      updateActiveButtons('img-', savedImage.split('.')[0].toLowerCase());
+      
+      // Update theme selector
+      document.querySelectorAll('.theme-option').forEach(option => {
+        option.classList.remove('active');
+      });
+      document.querySelector(`.theme-option.${savedTheme}`).classList.add('active');
+      
+      // Show content after loading
+      setTimeout(() => {
+        const loader = document.getElementById('loader');
+        loader.style.opacity = 0;
+        setTimeout(() => {
+          loader.style.display = 'none';
+          const content = document.getElementById('content');
+          content.style.opacity = 1;
+          content.classList.add('fade-in');
+        }, 600);
+      }, 1500);
+    };
+
+    function toggleSettingsMenu() {
+      const menu = document.getElementById('settings-menu');
+      menu.classList.toggle('active');
+    }
+
+    function changeBackground(videoName, save = true) {
+      settings.background = videoName;
+      
+      const video = document.getElementById('background-video');
+      video.pause();
+      video.src = videoName;
+      video.load();
+      video.play();
+      
+      if(save) {
+        localStorage.setItem('background', videoName);
+        // Update active button
+        updateActiveButtons('bg-', videoName.split('.')[0].replace(' ', '-'));
+      }
+    }
+
+    function changeImage(imageName, save = true) {
+      settings.image = imageName;
+      
+      const image = document.getElementById('image');
+      if (imageName === 'none') {
+        image.style.display = 'none';
+      } else {
+        image.style.display = 'block';
+        image.style.backgroundImage = `url('${imageName}')`;
+      }
+      
+      if(save) {
+        localStorage.setItem('image', imageName);
+        // Update active button
+        updateActiveButtons('img-', imageName.split('.')[0].toLowerCase());
+      }
+    }
+
+    function updateBorderRadius(radius, save = true) {
+      settings.borderRadius = radius;
+      
+      document.getElementById('radius-value').textContent = radius;
+      const image = document.getElementById('image');
+      image.style.borderRadius = `${radius}%`;
+      
+      if(save) {
+        localStorage.setItem('border-radius', radius);
+      }
+    }
+
+    function changeTheme(themeName, save = true) {
+      settings.theme = themeName;
+      
+      // Remove all theme classes
+      document.body.classList.remove('cosmic', 'forest', 'sunset', 'ruby', 'white');
+      // Add selected theme class
+      document.body.classList.add(themeName);
+
+      if(save) {
+        localStorage.setItem('theme', themeName);
+        // Update active theme
+        document.querySelectorAll('.theme-option').forEach(option => {
+          option.classList.remove('active');
+        });
+        document.querySelector(`.theme-option.${themeName}`).classList.add('active');
+      }
+    }
+
+    function updateActiveButtons(prefix, value) {
+      // Remove active class from all buttons with the prefix
+      document.querySelectorAll(`[id^="${prefix}"]`).forEach(button => {
+        button.classList.remove('active');
+      });
+      
+      // Add active class to the selected button
+      const selectedButton = document.getElementById(`${prefix}${value}`);
+      if (selectedButton) {
+        selectedButton.classList.add('active');
+      }
+    }
+    
+    // Add 3D tilt effect to links
+    document.querySelectorAll('.link').forEach(link => {
+      link.addEventListener('mousemove', function(e) {
+        const rect = this.getBoundingClientRect();
+        const x = e.clientX - rect.left; // x position within the element
+        const y = e.clientY - rect.top;  // y position within the element
+        
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const tiltX = (centerY - y) / 10;
+        const tiltY = (x - centerX) / 10;
+        
+        this.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(-5px)`;
+      });
+      
+      link.addEventListener('mouseleave', function() {
+        this.style.transform = '';
+      });
+    });
+
+    console.log("I'm spying on you.");
+    setTimeout(() => {
+        console.log("Just kidding or am I? (Yes)");
+    }, 1000); // 1000ms = 1 second
+  </script>
+</body>
+</html>

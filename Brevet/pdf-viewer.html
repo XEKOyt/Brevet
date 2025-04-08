@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced PDF Viewer</title>
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --success: #4cc9f0;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --gray: #6c757d;
+      --border: #dee2e6;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--dark);
+      background-color: #f5f7fa;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 1rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+    
+    h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      background-color: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 20px;
+      align-items: center;
+    }
+    
+    .toolbar-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .separator {
+      height: 24px;
+      width: 1px;
+      background-color: var(--border);
+      margin: 0 10px;
+    }
+    
+    .pdf-container {
+      background-color: #e9ecef;
+      border-radius: 8px;
+      overflow: auto;
+      flex-grow: 1;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      min-height: 500px;
+    }
+    
+    #pdf-render {
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      background-color: white;
+    }
+    
+    button {
+      background-color: white;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 6px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+      color: var(--dark);
+    }
+    
+    button:hover {
+      background-color: var(--light);
+      border-color: var(--gray);
+    }
+    
+    button.primary {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+    }
+    
+    button.primary:hover {
+      background-color: var(--secondary);
+    }
+    
+    input[type="number"] {
+      width: 60px;
+      padding: 6px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      text-align: center;
+    }
+    
+    select {
+      padding: 6px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+    
+    .page-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    #page-num {
+      min-width: 40px;
+      display: inline-block;
+      text-align: center;
+    }
+    
+    .loading-indicator {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    
+    .error-message {
+      background-color: #f8d7da;
+      color: #721c24;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      display: none;
+    }
+    
+    footer {
+      text-align: center;
+      padding: 10px;
+      background-color: var(--light);
+      margin-top: auto;
+      font-size: 0.8rem;
+      color: var(--gray);
+    }
+    
+    @media (max-width: 768px) {
+      .toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .toolbar-section {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .separator {
+        display: none;
+      }
+    }
+    
+    /* File upload styling */
+    .file-input-container {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .file-input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+    
+    /* Search styling */
+    .search-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    
+    #search-input {
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      min-width: 200px;
+    }
+    
+    .search-results {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-top: 4px;
+      z-index: 10;
+      max-height: 300px;
+      overflow-y: auto;
+      padding: 10px;
+    }
+    
+    .search-result-item {
+      padding: 8px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .search-result-item:hover {
+      background-color: var(--light);
+    }
+    
+    .search-result-item:last-child {
+      border-bottom: none;
+    }
+    
+    /* Document outline */
+    .outline-container {
+      width: 250px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      margin-right: 20px;
+      overflow: auto;
+      display: none;
+    }
+    
+    .outline-title {
+      padding: 10px;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .outline-items {
+      padding: 10px;
+    }
+    
+    .outline-item {
+      padding: 5px 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .outline-item:hover {
+      background-color: var(--light);
+    }
+    
+    .content-row {
+      display: flex;
+      flex-grow: 1;
+    }
+    
+    /* Dark mode toggle */
+    .dark-mode {
+      background-color: #222;
+      color: #eee;
+    }
+    
+    .dark-mode header {
+      background-color: #333;
+    }
+    
+    .dark-mode .toolbar,
+    .dark-mode .outline-container {
+      background-color: #333;
+      color: #eee;
+    }
+    
+    .dark-mode button {
+      background-color: #444;
+      color: #eee;
+      border-color: #555;
+    }
+    
+    .dark-mode button:hover {
+      background-color: #555;
+    }
+    
+    .dark-mode .pdf-container {
+      background-color: #444;
+    }
+    
+    .dark-mode .outline-item:hover {
+      background-color: #444;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Advanced PDF Viewer</h1>
+    </div>
+  </header>
+  
+  <div class="container">
+    <div id="error-message" class="error-message"></div>
+    
+    <div class="toolbar">
+      <div class="toolbar-section">
+        <div class="file-input-container">
+          <button id="open-file">
+            <span>Open PDF</span>
+          </button>
+          <input type="file" id="file-input" class="file-input" accept=".pdf" />
+        </div>
+        
+        <button id="toggle-outline">
+          <span>Outline</span>
+        </button>
+      </div>
+      
+      <div class="separator"></div>
+      
+      <div class="toolbar-section">
+        <button id="prev-page">
+          <span>&laquo; Previous</span>
+        </button>
+        
+        <div class="page-info">
+          <span>Page:</span>
+          <input type="number" id="current-page" min="1" value="1">
+          <span>of <span id="page-count">0</span></span>
+        </div>
+        
+        <button id="next-page">
+          <span>Next &raquo;</span>
+        </button>
+      </div>
+      
+      <div class="separator"></div>
+      
+      <div class="toolbar-section">
+        <button id="zoom-out">
+          <span>−</span>
+        </button>
+        
+        <select id="zoom-select">
+          <option value="0.5">50%</option>
+          <option value="0.75">75%</option>
+          <option value="1">100%</option>
+          <option value="1.25">125%</option>
+          <option value="1.5" selected>150%</option>
+          <option value="2">200%</option>
+          <option value="3">300%</option>
+          <option value="4">400%</option>
+        </select>
+        
+        <button id="zoom-in">
+          <span>+</span>
+        </button>
+      </div>
+      
+      <div class="separator"></div>
+      
+      <div class="toolbar-section">
+        <div class="search-container">
+          <input type="text" id="search-input" placeholder="Search...">
+          <button id="search-button">
+            <span>Search</span>
+          </button>
+          <div class="search-results" id="search-results"></div>
+        </div>
+      </div>
+      
+      <div class="separator"></div>
+      
+      <div class="toolbar-section">
+        <button id="rotate-button">
+          <span>Rotate</span>
+        </button>
+        
+        <button id="toggle-dark-mode">
+          <span>Dark Mode</span>
+        </button>
+      </div>
+    </div>
+    
+    <div class="content-row">
+      <div class="outline-container" id="outline-container">
+        <div class="outline-title">Document Outline</div>
+        <div class="outline-items" id="outline-items"></div>
+      </div>
+      
+      <div class="pdf-container" id="pdf-container">
+        <canvas id="pdf-render"></canvas>
+      </div>
+    </div>
+    
+    <div class="loading-indicator" id="loading-indicator">
+      <div>Loading PDF...</div>
+    </div>
+  </div>
+  
+  <footer>
+    <div>Advanced PDF Viewer © 2025 | Built with PDF.js</div>
+  </footer>
+  
+  <!-- Include the PDF.js library from a CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <script>
+    // Set up PDF.js worker
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+    
+    // DOM elements
+    const canvas = document.getElementById('pdf-render');
+    const ctx = canvas.getContext('2d');
+    const currentPageInput = document.getElementById('current-page');
+    const pageCount = document.getElementById('page-count');
+    const prevButton = document.getElementById('prev-page');
+    const nextButton = document.getElementById('next-page');
+    const zoomIn = document.getElementById('zoom-in');
+    const zoomOut = document.getElementById('zoom-out');
+    const zoomSelect = document.getElementById('zoom-select');
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
+    const searchResults = document.getElementById('search-results');
+    const fileInput = document.getElementById('file-input');
+    const openFileButton = document.getElementById('open-file');
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const errorMessage = document.getElementById('error-message');
+    const rotateButton = document.getElementById('rotate-button');
+    const toggleDarkMode = document.getElementById('toggle-dark-mode');
+    const toggleOutline = document.getElementById('toggle-outline');
+    const outlineContainer = document.getElementById('outline-container');
+    const outlineItems = document.getElementById('outline-items');
+    
+    // PDF document variables
+    let pdfDoc = null;
+    let pageNum = 1;
+    let pageRendering = false;
+    let pageNumPending = null;
+    let currentZoom = 1.5;
+    let currentRotation = 0;
+    let pdfUrl = '/Histoire/Histoire2024.pdf'; // Default PDF path
+    let searchMatches = [];
+    let currentMatchIndex = -1;
+    
+    // Initialize PDF viewer
+    function initPdf(url, isFileUpload = false) {
+      // Reset variables
+      pageNum = 1;
+      currentPageInput.value = 1;
+      currentZoom = parseFloat(zoomSelect.value);
+      currentRotation = 0;
+      searchMatches = [];
+      currentMatchIndex = -1;
+      searchResults.style.display = 'none';
+      
+      // Show loading indicator
+      loadingIndicator.style.display = 'block';
+      errorMessage.style.display = 'none';
+      
+      // Load the PDF
+      const loadingTask = pdfjsLib.getDocument(url);
+      
+      loadingTask.promise.then(pdfDocument => {
+        pdfDoc = pdfDocument;
+        pageCount.textContent = pdfDoc.numPages;
+        currentPageInput.max = pdfDoc.numPages;
+        
+        // Load the first page
+        renderPage(pageNum);
+        
+        // Load outline (if available)
+        loadOutline();
+        
+        // Hide loading indicator
+        loadingIndicator.style.display = 'none';
+      }).catch(error => {
+        console.error('Error loading PDF:', error);
+        loadingIndicator.style.display = 'none';
+        errorMessage.textContent = isFileUpload ? 
+          'Error loading the uploaded PDF. Make sure it is a valid PDF file.' : 
+          'Error loading the PDF. The file might not exist or is inaccessible.';
+        errorMessage.style.display = 'block';
+      });
+    }
+    
+    // Render a specific page
+    function renderPage(num) {
+      pageRendering = true;
+      
+      // Update current page input
+      currentPageInput.value = num;
+      
+      // Show loading indicator
+      loadingIndicator.style.display = 'block';
+      
+      // Get the page
+      pdfDoc.getPage(num).then(page => {
+        // Prepare canvas for rendering
+        const viewport = page.getViewport({ scale: currentZoom, rotation: currentRotation });
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        
+        // Render PDF page
+        const renderContext = {
+          canvasContext: ctx,
+          viewport: viewport
+        };
+        
+        const renderTask = page.render(renderContext);
+        
+        // Wait for rendering to finish
+        renderTask.promise.then(() => {
+          pageRendering = false;
+          loadingIndicator.style.display = 'none';
+          
+          // Check if there's another page waiting to be rendered
+          if (pageNumPending !== null) {
+            renderPage(pageNumPending);
+            pageNumPending = null;
+          }
+          
+          // Highlight search results if available
+          if (searchMatches.length > 0) {
+            highlightSearchResults(page);
+          }
+        }).catch(error => {
+          console.error('Error rendering page:', error);
+          pageRendering = false;
+          loadingIndicator.style.display = 'none';
+          errorMessage.textContent = 'Error rendering the page. The PDF might be corrupted.';
+          errorMessage.style.display = 'block';
+        });
+      });
+    }
+    
+    // Queue rendering of a page
+    function queueRenderPage(num) {
+      if (pageRendering) {
+        pageNumPending = num;
+      } else {
+        renderPage(num);
+      }
+    }
+    
+    // Go to previous page
+    function showPrevPage() {
+      if (pageNum <= 1) return;
+      pageNum--;
+      queueRenderPage(pageNum);
+    }
+    
+    // Go to next page
+    function showNextPage() {
+      if (pageNum >= pdfDoc.numPages) return;
+      pageNum++;
+      queueRenderPage(pageNum);
+    }
+    
+    // Handle zoom change
+    function handleZoomChange(newZoom) {
+      currentZoom = newZoom;
+      queueRenderPage(pageNum);
+    }
+    
+    // Rotate the PDF
+    function rotatePdf() {
+      currentRotation = (currentRotation + 90) % 360;
+      queueRenderPage(pageNum);
+    }
+    
+    // Search in the PDF
+    function searchInPdf(query) {
+      if (!query || !pdfDoc) return;
+      
+      // Reset search results
+      searchMatches = [];
+      currentMatchIndex = -1;
+      searchResults.innerHTML = '';
+      searchResults.style.display = 'none';
+      
+      // Show loading indicator
+      loadingIndicator.style.display = 'block';
+      
+      let pendingSearches = pdfDoc.numPages;
+      let hasResults = false;
+      
+      // Search in each page
+      for (let i = 1; i <= pdfDoc.numPages; i++) {
+        pdfDoc.getPage(i).then(page => {
+          page.getTextContent().then(textContent => {
+            const text = textContent.items.map(item => item.str).join(' ');
+            const regex = new RegExp(query, 'gi');
+            let match;
+            
+            while ((match = regex.exec(text)) !== null) {
+              hasResults = true;
+              searchMatches.push({
+                pageNum: i,
+                matchIndex: match.index,
+                matchText: match[0]
+              });
+              
+              // Add result to the search results panel
+              const resultItem = document.createElement('div');
+              resultItem.className = 'search-result-item';
+              resultItem.textContent = `Page ${i}: ${getContextForMatch(text, match.index, 40)}`;
+              resultItem.addEventListener('click', () => {
+                pageNum = i;
+                queueRenderPage(pageNum);
+                searchResults.style.display = 'none';
+              });
+              
+              searchResults.appendChild(resultItem);
+            }
+            
+            pendingSearches--;
+            
+            // When all pages have been searched
+            if (pendingSearches === 0) {
+              loadingIndicator.style.display = 'none';
+              
+              if (hasResults) {
+                searchResults.style.display = 'block';
+              } else {
+                const noResults = document.createElement('div');
+                noResults.className = 'search-result-item';
+                noResults.textContent = 'No results found';
+                searchResults.appendChild(noResults);
+                searchResults.style.display = 'block';
+              }
+              
+              // If there are results, highlight them on the current page
+              if (searchMatches.length > 0) {
+                const pageMatches = searchMatches.filter(match => match.pageNum === pageNum);
+                if (pageMatches.length > 0) {
+                  pdfDoc.getPage(pageNum).then(page => {
+                    highlightSearchResults(page);
+                  });
+                }
+              }
+            }
+          });
+        });
+      }
+    }
+    
+    // Get context for search match
+    function getContextForMatch(text, index, contextLength) {
+      const start = Math.max(0, index - contextLength);
+      const end = Math.min(text.length, index + contextLength);
+      let context = text.substring(start, end);
+      
+      if (start > 0) context = '...' + context;
+      if (end < text.length) context = context + '...';
+      
+      return context;
+    }
+    
+    // Highlight search results on the page
+    function highlightSearchResults(page) {
+      const pageMatches = searchMatches.filter(match => match.pageNum === pageNum);
+      if (pageMatches.length === 0) return;
+      
+      page.getTextContent().then(textContent => {
+        const viewport = page.getViewport({ scale: currentZoom, rotation: currentRotation });
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext('2d');
+        
+        // Draw yellow highlight rectangles for each matched word position
+        pageMatches.forEach(match => {
+          // This is a simplified approach - accurate highlighting would require
+          // mapping text indices to their positions on the rendered page
+          // For a full implementation, you would need to use the transform matrices from getTextContent
+          // Here we're just simulating the highlighting effect
+        });
+      });
+    }
+    
+    // Load document outline/bookmarks
+    function loadOutline() {
+      pdfDoc.getOutline().then(outline => {
+        outlineItems.innerHTML = '';
+        
+        if (outline && outline.length > 0) {
+          createOutlineItems(outline, outlineItems);
+        } else {
+          const noOutline = document.createElement('div');
+          noOutline.textContent = 'No outline available';
+          noOutline.style.padding = '10px';
+          noOutline.style.color = '#666';
+          outlineItems.appendChild(noOutline);
+        }
+      });
+    }
+    
+    // Create outline items recursively
+    function createOutlineItems(items, container, level = 0) {
+      items.forEach(item => {
+        const outlineItem = document.createElement('div');
+        outlineItem.className = 'outline-item';
+        outlineItem.textContent = item.title;
+        outlineItem.style.paddingLeft = (level * 10 + 10) + 'px';
+        
+        outlineItem.addEventListener('click', () => {
+          if (item.dest) {
+            pdfDoc.getDestination(item.dest).then(dest => {
+              if (Array.isArray(dest)) {
+                const pageRef = dest[0];
+                pdfDoc.getPageIndex(pageRef).then(pageIndex => {
+                  pageNum = pageIndex + 1;
+                  queueRenderPage(pageNum);
+                });
+              }
+            });
+          }
+        });
+        
+        container.appendChild(outlineItem);
+        
+        if (item.items && item.items.length > 0) {
+          createOutlineItems(item.items, container, level + 1);
+        }
+      });
+    }
+    
+    // Toggle dark mode
+    function toggleDarkModeHandler() {
+      document.body.classList.toggle('dark-mode');
+    }
+    
+    // Handle file upload
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file && file.type === 'application/pdf') {
+        const fileReader = new FileReader();
+        
+        fileReader.onload = function() {
+          const typedArray = new Uint8Array(this.result);
+          initPdf({ data: typedArray }, true);
+        };
+        
+        fileReader.readAsArrayBuffer(file);
+      }
+    }
+    
+    // Initialize the viewer
+    function init() {
+      // Set initial zoom
+      zoomSelect.value = currentZoom.toString();
+      
+      // Add event listeners
+      prevButton.addEventListener('click', showPrevPage);
+      nextButton.addEventListener('click', showNextPage);
+      zoomIn.addEventListener('click', () => {
+        let newZoom = parseFloat(zoomSelect.value) + 0.25;
+        if (newZoom > 4) newZoom = 4;
+        zoomSelect.value = newZoom.toString();
+        handleZoomChange(newZoom);
+      });
+      zoomOut.addEventListener('click', () => {
+        let newZoom = parseFloat(zoomSelect.value) - 0.25;
+        if (newZoom < 0.5) newZoom = 0.5;
+        zoomSelect.value = newZoom.toString();
+        handleZoomChange(newZoom);
+      });
+      zoomSelect.addEventListener('change', () => {
+        handleZoomChange(parseFloat(zoomSelect.value));
+      });
+      searchButton.addEventListener('click', () => {
+        searchInPdf(searchInput.value);
+      });
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          searchInPdf(searchInput.value);
+        }
+      });
+      
+      // Handle page input
+      currentPageInput.addEventListener('change', () => {
+        const page = parseInt(currentPageInput.value);
+        if (page >= 1 && page <= pdfDoc.numPages) {
+          pageNum = page;
+          queueRenderPage(pageNum);
+        } else {
+          currentPageInput.value = pageNum;
+        }
+      });
+      
+      // File upload
+      fileInput.addEventListener('change', handleFileUpload);
+      openFileButton.addEventListener('click', () => {
+        fileInput.click();
+      });
+      
+      // Rotation
+      rotateButton.addEventListener('click', rotatePdf);
+      
+      // Dark mode
+      toggleDarkMode.addEventListener('click', toggleDarkModeHandler);
+      
+      // Toggle outline
+      toggleOutline.addEventListener('click', () => {
+        if (outlineContainer.style.display === 'block') {
+          outlineContainer.style.display = 'none';
+        } else {
+          outlineContainer.style.display = 'block';
+        }
+      });
+      
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+          showPrevPage();
+        } else if (e.key === 'ArrowRight') {
+          showNextPage();
+        } else if (e.key === '+' || e.key === '=') {
+          zoomIn.click();
+        } else if (e.key === '-') {
+          zoomOut.click();
+        }
+      });
+      
+      // Initialize with the default PDF
+      initPdf(pdfUrl);
+    }
+    
+    // Start the viewer when the page is loaded
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

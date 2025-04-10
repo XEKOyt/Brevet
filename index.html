@@ -585,9 +585,8 @@
       <div class="link" onclick="redirectTo('5/home.html')"><span id="link-grade5">5 ème</span></div>
       <div class="link" onclick="redirectTo('4/home.html')"><span id="link-grade4">4 ème</span></div>
       <div class="link" onclick="redirectTo('3/home.html')"><span id="link-grade3">3 ème</span></div>
-      <div class="link" onclick="redirectTo('quiz.html')"><span id="link-quiz">Quiz</span></div>
+      <div class="link" onclick="redirectTo('tools/index.html')"><span id="link-tools">Tools</span></div>
       <div class="link" onclick="redirectTo('Brevet/pdf-viewer.html')"><span id="link-brevet">Brevet blanc</span></div>
-      <div class="link" onclick="redirectTo('Tools/Home.html')"><span id="link-quiz">Outils</span></div>
     </div>
   </div>
 
@@ -595,6 +594,8 @@
   <button class="settings-btn" onclick="toggleSettingsMenu()">⚙️</button>
   <!-- Credits Button -->
   <button class="credits-btn" onclick="toggleCreditsMenu()">ℹ️</button>
+  <!-- Song Button -->
+  <button class="song-btn" onclick="toggleSettingsMenu()">🔊</button>
 
   <!-- Settings Menu -->
   <div id="settings-menu" class="settings-menu">
@@ -815,11 +816,11 @@
     const translations = {
       en: {
         welcome: "Welcome to hell",
-        grade6: "6th",
-        grade5: "5th",
-        grade4: "4th",
-        grade3: "3rd",
-        quiz: "Quiz",
+        grade6: "6 ème",
+        grade5: "5 ème",
+        grade4: "4 ème",
+        grade3: "3 ème",
+        tools: "Tools",
         brevet: "Brevet Blanc",
         customize: "Customize Your Experience",
         selectTheme: "Select Theme",
@@ -926,7 +927,7 @@
       document.getElementById('link-grade5').innerText = dict.grade5;
       document.getElementById('link-grade4').innerText = dict.grade4;
       document.getElementById('link-grade3').innerText = dict.grade3;
-      document.getElementById('link-quiz').innerText = dict.quiz;
+      document.getElementById('link-tools').innerText = dict.tools;
       document.getElementById('link-brevet').innerText = dict.brevet;
       document.getElementById('customize-label').innerText = dict.customize;
       document.getElementById('select-theme-label').innerText = dict.selectTheme;

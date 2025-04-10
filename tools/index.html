@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Da Tools</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+    
+    .container {
+      text-align: center;
+      max-width: 900px;
+      padding: 40px;
+      z-index: 10;
+    }
+    
+    h1 {
+      font-size: 3.5rem;
+      margin-bottom: 2rem;
+      background: linear-gradient(90deg, #00f2fe, #4facfe, #b465da);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 3rem;
+      line-height: 1.6;
+      color: #c5c5c5;
+    }
+    
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+    
+    .btn {
+      position: relative;
+      padding: 15px 30px;
+      background: rgba(255, 255, 255, 0.05);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(5px);
+      width: 180px;
+      height: 60px;
+    }
+    
+    .btn:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.1);
+      transform: translateX(-100%);
+      transition: all 0.4s ease;
+      z-index: 1;
+    }
+    
+    .btn:hover:before {
+      transform: translateX(0);
+    }
+    
+    .btn:after {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: -5px;
+      right: -5px;
+      bottom: -5px;
+      background: linear-gradient(45deg, #ff0f7b, #f89b29, #06bcfb);
+      z-index: -1;
+      border-radius: 15px;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    
+    .btn:hover:after {
+      opacity: 1;
+    }
+    
+    .btn span {
+      position: relative;
+      z-index: 2;
+    }
+    
+    .btn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    #btn1:after {
+      background: linear-gradient(45deg, #00c6ff, #0072ff);
+    }
+    
+    #btn2:after {
+      background: linear-gradient(45deg, #f857a6, #ff5858);
+    }
+    
+    #btn3:after {
+      background: linear-gradient(45deg, #a8ff78, #78ffd6);
+    }
+    
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    
+    .particle {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      animation: float 10s infinite linear;
+    }
+    
+    @keyframes float {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+    
+    .tooltip {
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 0.8rem;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 100;
+    }
+    
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2.5rem;
+      }
+      
+      .buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+  <div class="tooltip" id="tooltip"></div>
+  
+  <button class="back-btn" onclick="goBack()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 12H5M12 19l-7-7 7-7"/>
+    </svg>
+    <span>Back</span>
+  </button>
+
+  <div class="container">
+    <h1>Da Tools</h1>
+    
+    <div class="buttons">
+      <button class="btn" id="btn1" 
+              data-file="pdf-viewer.html" 
+              data-tooltip="Open PDF Viewer Tool"
+              onclick="redirectToFile(this)">
+        <span>PDF Viewer</span>
+      </button>
+      
+      <button class="btn" id="btn2" 
+              data-file="calculator.html" 
+              data-tooltip="Open Calculator Tool"
+              onclick="redirectToFile(this)">
+        <span>Calculator</span>
+      </button>
+      
+      <button class="btn" id="btn3" 
+              data-file="notepad.html" 
+              data-tooltip="Open Notepad Tool"
+              onclick="redirectToFile(this)">
+        <span>Notepad</span>
+      </button>
+    </div>
+  </div>
+  
+  <script>
+    // Create particles
+    const particlesContainer = document.getElementById('particles');
+    const particleCount = 100;
+    
+    for (let i = 0; i < particleCount; i++) {
+      const particle = document.createElement('div');
+      particle.classList.add('particle');
+
+      particle.style.left = `${Math.random() * 100}vw`;
+      particle.style.top = `${Math.random() * 100}vh`;
+
+      const size = Math.random() * 8 + 2;
+      particle.style.width = `${size}px`;
+      particle.style.height = `${size}px`;
+
+      particle.style.opacity = Math.random() * 0.5 + 0.3;
+
+      const duration = Math.random() * 15 + 10;
+      particle.style.animation = `float ${duration}s infinite linear`;
+      
+      particle.style.animationDelay = `${Math.random() * 5}s`;
+      
+      particlesContainer.appendChild(particle);
+    }
+    
+    // Redirect to file function
+    function redirectToFile(button) {
+      // Create ripple effect
+      animateClick(button);
+      
+      // Get file path from data attribute
+      const filePath = button.getAttribute('data-file');
+      
+      // Redirect to the file after a short delay to allow the animation to play
+      setTimeout(() => {
+        window.location.href = filePath;
+      }, 300);
+    }
+    
+    // Click animation
+    function animateClick(button) {
+      button.classList.add('clicked');
+      
+      const ripple = document.createElement('div');
+      ripple.style.position = 'absolute';
+      ripple.style.width = '20px';
+      ripple.style.height = '20px';
+      ripple.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+      ripple.style.borderRadius = '50%';
+      ripple.style.transform = 'translate(-50%, -50%)';
+      ripple.style.pointerEvents = 'none';
+      
+      const rect = button.getBoundingClientRect();
+      ripple.style.left = '50%';
+      ripple.style.top = '50%';
+      
+      button.appendChild(ripple);
+      
+      ripple.animate(
+        [
+          { opacity: 1, transform: 'translate(-50%, -50%) scale(0)' },
+          { opacity: 0, transform: 'translate(-50%, -50%) scale(10)' }
+        ],
+        {
+          duration: 600,
+          easing: 'ease-out'
+        }
+      ).onfinish = () => {
+        ripple.remove();
+        button.classList.remove('clicked');
+      };
+    }
+    
+    function goBack() {
+      window.location.href = "../index.html";
+    }
+
+    // Add tooltips functionality
+    const buttons = document.querySelectorAll('.btn');
+    const tooltip = document.getElementById('tooltip');
+    
+    buttons.forEach(button => {
+      button.addEventListener('mouseover', (e) => {
+        const tooltipText = button.getAttribute('data-tooltip');
+        tooltip.textContent = tooltipText;
+        tooltip.style.opacity = '1';
+        
+        // Position the tooltip
+        const rect = button.getBoundingClientRect();
+        tooltip.style.top = rect.bottom + 10 + 'px';
+        tooltip.style.left = rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2) + 'px';
+      });
+      
+      button.addEventListener('mouseout', () => {
+        tooltip.style.opacity = '0';
+      });
+    });
+  </script>
+</body>
+</html>

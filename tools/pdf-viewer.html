@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced PDF Viewer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    
+    /* Light mode overrides */
+    body.light-mode {
+      background: #f5f5f5;
+      color: #333;
+    }
+    
+    header {
+      text-align: center;
+      padding: 2rem 1rem;
+      position: relative;
+      z-index: 10;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(90deg, #f857a6, #ff5858);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .subtitle {
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 1rem;
+    }
+    
+    .container {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 1rem 2rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      position: relative;
+      z-index: 5;
+    }
+    
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1rem;
+      border-radius: 15px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .toolbar-section {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .separator {
+      height: 24px;
+      width: 1px;
+      background-color: rgba(255, 255, 255, 0.2);
+      margin: 0 8px;
+    }
+    
+    .pdf-container {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 15px;
+      overflow: hidden;
+      flex-grow: 1;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(5px);
+      min-height: 500px;
+    }
+    
+    #pdf-render {
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      background-color: white;
+      max-height: calc(100vh - 240px);
+      border-radius: 5px;
+    }
+    
+    button {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 10px 15px;
+      color: white;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(5px);
+    }
+    
+    button:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateX(-100%);
+      transition: all 0.3s ease;
+      z-index: 1;
+    }
+    
+    button:hover:before {
+      transform: translateX(0);
+    }
+    
+    button span {
+      position: relative;
+      z-index: 2;
+    }
+    
+    button:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+    
+    button:active {
+      transform: translateY(1px);
+    }
+    
+    button.primary {
+      background: linear-gradient(90deg, #f857a6, #ff5858);
+      border: none;
+    }
+    
+    button.primary:hover {
+      background: linear-gradient(90deg, #ff5858, #f857a6);
+    }
+    
+    .page-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .page-info {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(5px);
+    }
+    
+    input[type="number"], input[type="text"] {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 5px;
+      padding: 5px 10px;
+      color: white;
+      text-align: center;
+    }
+    
+    input[type="number"]:focus, input[type="text"]:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+    
+    select {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 5px;
+      padding: 5px 10px;
+      color: white;
+      cursor: pointer;
+    }
+    
+    select:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+    
+    .loading-indicator {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.7);
+      padding: 20px 40px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      z-index: 100;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+    }
+    
+    .loading-spinner {
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top: 3px solid #f857a6;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 10px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .error-message {
+      background: rgba(255, 87, 87, 0.2);
+      color: #ff5858;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: none;
+      border: 1px solid rgba(255, 87, 87, 0.3);
+      backdrop-filter: blur(5px);
+    }
+    
+    .zoom-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    /* Particles */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    .particle {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      animation: float 15s infinite linear;
+    }
+    
+    @keyframes float {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+    
+    /* File upload styling */
+    .file-upload {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .file-upload input[type="file"] {
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+    
+    /* Responsive styling */
+    @media (max-width: 768px) {
+      .toolbar {
+        flex-direction: column;
+        padding: 15px 10px;
+      }
+      
+      .toolbar-section {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 10px;
+      }
+      
+      .separator {
+        display: none;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+      }
+    }
+    
+    /* Notification */
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(90deg, #f857a6, #ff5858);
+      color: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      transform: translateX(120%);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+      max-width: 300px;
+    }
+    
+    .notification.show {
+      transform: translateX(0);
+    }
+    
+    /* Outline container */
+    #outline-container {
+      display: none;
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      width: 300px;
+      max-height: 80vh;
+      overflow-y: auto;
+      background: rgba(0,0,0,0.7);
+      padding: 10px;
+      border-radius: 8px;
+      z-index: 1000;
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(5px);
+    }
+    
+    /* Glow effects */
+    .glow {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: rgba(248, 87, 166, 0.15);
+      filter: blur(70px);
+      z-index: 0;
+    }
+    
+    .glow:nth-child(1) {
+      top: -150px;
+      left: 20%;
+    }
+    
+    .glow:nth-child(2) {
+      bottom: -100px;
+      right: 10%;
+      background: rgba(255, 88, 88, 0.15);
+    }
+    
+    .glow:nth-child(3) {
+      top: 50%;
+      left: -100px;
+      background: rgba(159, 122, 234, 0.15);
+    }
+  </style>
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+  <div class="glow"></div>
+  <div class="glow"></div>
+  <div class="glow"></div>
+  
+  <header>
+    <h1>Advanced PDF Viewer</h1>
+    <p class="subtitle">View, navigate and explore your PDF documents</p>
+    <!-- Dark mode toggle button -->
+    <button id="toggle-dark-mode"><span>Toggle Dark Mode</span></button>
+  </header>
+  
+  <div class="container">
+    <div id="error-message" class="error-message"></div>
+    
+    <div class="toolbar">
+      <div class="toolbar-section">
+        <div class="file-upload">
+          <button id="open-file">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="12" y1="18" x2="12" y2="12"></line>
+              <line x1="9" y1="15" x2="15" y2="15"></line>
+            </svg>
+            <span>Open PDF</span>
+          </button>
+          <input type="file" id="file-input" accept=".pdf" />
+        </div>
+        
+        <button id="toggle-outline">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+          </svg>
+          <span>Outline</span>
+        </button>
+      </div>
+      
+      <div class="separator"></div>
+      
+      <div class="toolbar-section page-controls">
+        <button id="prev-page">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span>Previous</span>
+        </button>
+        
+        <div class="page-info">
+          <span>Page</span>
+          <input type="number" id="current-page" min="1" value="1">
+          <span>of <span id="page-count">0</span></span>
+        </div>
+        
+        <button id="next-page">
+          <span>Next</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="separator"></div>
+      
+      <div class="toolbar-section zoom-controls">
+        <button id="zoom-out">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+        
+        <select id="zoom-select">
+          <option value="0.5">50%</option>
+          <option value="0.75">75%</option>
+          <option value="1">100%</option>
+          <option value="1.25">125%</option>
+          <option value="1.5" selected>150%</option>
+          <option value="2">200%</option>
+          <option value="3">300%</option>
+        </select>
+        
+        <button id="zoom-in">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="separator"></div>
+      
+      <div class="toolbar-section">
+        <!-- Search input and button -->
+        <input type="text" id="search-input" placeholder="Search PDF..." />
+        <button id="search-button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <span>Search</span>
+        </button>
+        
+        <button id="rotate-button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 4v6h-6"></path>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+          </svg>
+          <span>Rotate</span>
+        </button>
+        
+        <button id="fullscreen-button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+          </svg>
+          <span>Fullscreen</span>
+        </button>
+      </div>
+    </div>
+    
+    <div class="pdf-container" id="pdf-container">
+      <canvas id="pdf-render"></canvas>
+    </div>
+  </div>
+  
+  <!-- Outline panel -->
+  <div id="outline-container"></div>
+  
+  <div class="loading-indicator" id="loading-indicator">
+    <div class="loading-spinner"></div>
+    <div>Loading PDF...</div>
+  </div>
+  
+  <div class="notification" id="notification"></div>
+  
+  <!-- Include the PDF.js library from a CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <script>
+    // Set up PDF.js worker
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+    
+    // DOM elements
+    const canvas = document.getElementById('pdf-render');
+    const ctx = canvas.getContext('2d');
+    const currentPageInput = document.getElementById('current-page');
+    const pageCount = document.getElementById('page-count');
+    const prevButton = document.getElementById('prev-page');
+    const nextButton = document.getElementById('next-page');
+    const zoomInButton = document.getElementById('zoom-in');
+    const zoomOutButton = document.getElementById('zoom-out');
+    const zoomSelect = document.getElementById('zoom-select');
+    const fileInput = document.getElementById('file-input');
+    const openFileButton = document.getElementById('open-file');
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const errorMessage = document.getElementById('error-message');
+    const rotateButton = document.getElementById('rotate-button');
+    const fullscreenButton = document.getElementById('fullscreen-button');
+    const notificationElement = document.getElementById('notification');
+    const pdfContainer = document.getElementById('pdf-container');
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
+    const darkModeToggle = document.getElementById('toggle-dark-mode');
+    const toggleOutline = document.getElementById('toggle-outline');
+    const outlineContainer = document.getElementById('outline-container');
+    
+    // PDF document variables
+    let pdfDoc = null;
+    let pageNum = 1;
+    let pageRendering = false;
+    let pageNumPending = null;
+    let currentZoom = parseFloat(zoomSelect.value);
+    let currentRotation = 0;
+    let pdfUrl = '../Brevet/Histoire/Histoire2024.pdf'; // Default PDF path
+    
+    // Create particles
+    const particlesContainer = document.getElementById('particles');
+    const particleCount = 50;
+    
+    for (let i = 0; i < particleCount; i++) {
+      const particle = document.createElement('div');
+      particle.classList.add('particle');
+      
+      const size = Math.random() * 5 + 2;
+      particle.style.width = `${size}px`;
+      particle.style.height = `${size}px`;
+      
+      particle.style.left = `${Math.random() * 100}vw`;
+      particle.style.top = `${Math.random() * 100}vh`;
+      
+      // Random colors
+      const hue = Math.floor(Math.random() * 360);
+      particle.style.background = `hsla(${hue}, 100%, 75%, ${Math.random() * 0.5 + 0.2})`;
+      particle.style.boxShadow = `0 0 ${size * 2}px hsla(${hue}, 100%, 75%, 0.3)`;
+      
+      const duration = Math.random() * 20 + 10;
+      particle.style.animation = `float ${duration}s infinite linear`;
+      particle.style.animationDelay = `${Math.random() * 20}s`;
+      
+      particlesContainer.appendChild(particle);
+    }
+    
+    // Initialize PDF viewer
+    function initPdf(url, isFileUpload = false) {
+      // Reset variables
+      pageNum = 1;
+      currentPageInput.value = 1;
+      currentZoom = parseFloat(zoomSelect.value);
+      currentRotation = 0;
+      
+      // Show loading indicator
+      loadingIndicator.style.display = 'flex';
+      errorMessage.style.display = 'none';
+      
+      // Load the PDF
+      const loadingTask = pdfjsLib.getDocument(url);
+      
+      loadingTask.promise.then(pdfDocument => {
+        pdfDoc = pdfDocument;
+        pageCount.textContent = pdfDoc.numPages;
+        currentPageInput.max = pdfDoc.numPages;
+        
+        // Load the first page
+        renderPage(pageNum);
+        
+        // Hide loading indicator
+        loadingIndicator.style.display = 'none';
+        
+        // Show notification
+        showNotification('PDF loaded successfully!');
+      }).catch(error => {
+        console.error('Error loading PDF:', error);
+        loadingIndicator.style.display = 'none';
+        errorMessage.textContent = isFileUpload ? 
+          'Error loading the uploaded PDF. Make sure it is a valid PDF file.' : 
+          'Error loading the PDF. The file might not exist or is inaccessible.';
+        errorMessage.style.display = 'block';
+      });
+    }
+    
+    // Render a specific page
+    function renderPage(num) {
+      pageRendering = true;
+      
+      // Update current page input
+      currentPageInput.value = num;
+      
+      // Show loading indicator
+      loadingIndicator.style.display = 'flex';
+      
+      // Get the page
+      pdfDoc.getPage(num).then(page => {
+        // Prepare canvas for rendering
+        const viewport = page.getViewport({ scale: currentZoom, rotation: currentRotation });
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        
+        // Render PDF page
+        const renderContext = {
+          canvasContext: ctx,
+          viewport: viewport
+        };
+        
+        const renderTask = page.render(renderContext);
+        
+        // Wait for rendering to finish
+        renderTask.promise.then(() => {
+          pageRendering = false;
+          loadingIndicator.style.display = 'none';
+          
+          // Create ripple effect on page change
+          createRippleEffect();
+          
+          // Check if there's another page waiting to be rendered
+          if (pageNumPending !== null) {
+            renderPage(pageNumPending);
+            pageNumPending = null;
+          }
+        }).catch(error => {
+          console.error('Error rendering page:', error);
+          pageRendering = false;
+          loadingIndicator.style.display = 'none';
+          errorMessage.textContent = 'Error rendering the page. The PDF might be corrupted.';
+          errorMessage.style.display = 'block';
+        });
+      });
+    }
+    
+    // Queue rendering of a page
+    function queueRenderPage(num) {
+      if (pageRendering) {
+        pageNumPending = num;
+      } else {
+        renderPage(num);
+      }
+    }
+    
+    // Go to previous page
+    function showPrevPage() {
+      if (pageNum <= 1) {
+        showNotification('Already at first page!');
+        return;
+      }
+      pageNum--;
+      queueRenderPage(pageNum);
+      addButtonRipple(prevButton);
+    }
+    
+    // Go to next page
+    function showNextPage() {
+      if (pageNum >= pdfDoc.numPages) {
+        showNotification('Already at last page!');
+        return;
+      }
+      pageNum++;
+      queueRenderPage(pageNum);
+      addButtonRipple(nextButton);
+    }
+    
+    // Handle zoom change
+    function handleZoomChange(newZoom) {
+      currentZoom = newZoom;
+      queueRenderPage(pageNum);
+    }
+    
+    // Rotate the PDF
+    function rotatePdf() {
+      currentRotation = (currentRotation + 90) % 360;
+      queueRenderPage(pageNum);
+      showNotification(`Rotated to ${currentRotation}°`);
+      addButtonRipple(rotateButton);
+    }
+    
+    // Toggle fullscreen
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        pdfContainer.requestFullscreen().catch(err => {
+          showNotification('Error attempting to enable fullscreen mode.');
+        });
+      } else {
+        document.exitFullscreen();
+      }
+      addButtonRipple(fullscreenButton);
+    }
+    
+    // Show notification
+    function showNotification(message) {
+      notificationElement.textContent = message;
+      notificationElement.classList.add('show');
+      
+      setTimeout(() => {
+        notificationElement.classList.remove('show');
+      }, 3000);
+    }
+    
+    // Add ripple effect to buttons
+    function addButtonRipple(button) {
+      const ripple = document.createElement('div');
+      ripple.style.position = 'absolute';
+      ripple.style.width = '20px';
+      ripple.style.height = '20px';
+      ripple.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+      ripple.style.borderRadius = '50%';
+      ripple.style.transform = 'translate(-50%, -50%)';
+      ripple.style.pointerEvents = 'none';
+      
+      const rect = button.getBoundingClientRect();
+      const x = rect.width / 2;
+      const y = rect.height / 2;
+      
+      ripple.style.left = `${x}px`;
+      ripple.style.top = `${y}px`;
+      
+      button.appendChild(ripple);
+      
+      ripple.animate(
+        [
+          { opacity: 1, transform: 'translate(-50%, -50%) scale(0)' },
+          { opacity: 0, transform: 'translate(-50%, -50%) scale(10)' }
+        ],
+        {
+          duration: 600,
+          easing: 'ease-out'
+        }
+      ).onfinish = () => {
+        ripple.remove();
+      };
+    }
+    
+    // Create ripple effect when page changes
+    function createRippleEffect() {
+      const ripple = document.createElement('div');
+      ripple.style.position = 'absolute';
+      ripple.style.top = '50%';
+      ripple.style.left = '50%';
+      ripple.style.transform = 'translate(-50%, -50%)';
+      ripple.style.width = '5px';
+      ripple.style.height = '5px';
+      ripple.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
+      ripple.style.borderRadius = '50%';
+      ripple.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.5)';
+      ripple.style.zIndex = '100';
+      ripple.style.pointerEvents = 'none';
+      
+      pdfContainer.appendChild(ripple);
+      
+      ripple.animate(
+        [
+          { width: '5px', height: '5px', opacity: 1 },
+          { width: '300px', height: '300px', opacity: 0 }
+        ],
+        {
+          duration: 700,
+          easing: 'ease-out'
+        }
+      ).onfinish = () => {
+        ripple.remove();
+      };
+    }
+    
+    // Handle file upload
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file && file.type === 'application/pdf') {
+        const fileReader = new FileReader();
+        
+        fileReader.onload = function() {
+          const typedArray = new Uint8Array(this.result);
+          initPdf({ data: typedArray }, true);
+        };
+        
+        fileReader.readAsArrayBuffer(file);
+      } else {
+        showNotification('Please select a valid PDF file.');
+      }
+    }
+    
+    // Render PDF outline
+    function renderOutline() {
+      pdfDoc.getOutline().then(outline => {
+        if (!outline) {
+          outlineContainer.innerHTML = "<p style='color: white;'>No outline available.</p>";
+          return;
+        }
+        let html = '<ul style="list-style: none; padding: 0; margin: 0; color: white;">';
+        outline.forEach(item => {
+          html += `<li style="padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">${item.title}</li>`;
+        });
+        html += '</ul>';
+        outlineContainer.innerHTML = html;
+      });
+    }
+    
+    // Toggle dark mode
+    function toggleDarkModeHandler() {
+      document.body.classList.toggle('light-mode');
+      darkModeToggle.textContent = document.body.classList.contains('light-mode') ? 'Dark Mode' : 'Light Mode';
+    }
+    
+    // Event listeners
+    prevButton.addEventListener('click', showPrevPage);
+    nextButton.addEventListener('click', showNextPage);
+    
+    zoomInButton.addEventListener('click', () => {
+      let newZoom = parseFloat(zoomSelect.value) + 0.25;
+      if (newZoom > 3) newZoom = 3;
+      zoomSelect.value = newZoom.toString();
+      handleZoomChange(newZoom);
+      addButtonRipple(zoomInButton);
+    });
+    
+    zoomOutButton.addEventListener('click', () => {
+      let newZoom = parseFloat(zoomSelect.value) - 0.25;
+      if (newZoom < 0.5) newZoom = 0.5;
+      zoomSelect.value = newZoom.toString();
+      handleZoomChange(newZoom);
+      addButtonRipple(zoomOutButton);
+    });
+    
+    zoomSelect.addEventListener('change', () => {
+      handleZoomChange(parseFloat(zoomSelect.value));
+    });
+    
+    searchButton.addEventListener('click', () => {
+      // Placeholder for search functionality
+      const query = searchInput.value.trim();
+      if (query === '') {
+        showNotification('Enter a search term.');
+      } else {
+        console.log('Search query:', query);
+        showNotification(`Searching for "${query}"...`);
+        // Extend search functionality here.
+      }
+    });
+    
+    currentPageInput.addEventListener('change', () => {
+      const page = parseInt(currentPageInput.value);
+      if (page >= 1 && page <= pdfDoc.numPages) {
+        pageNum = page;
+        queueRenderPage(pageNum);
+      } else {
+        currentPageInput.value = pageNum;
+      }
+    });
+    
+    fileInput.addEventListener('change', handleFileUpload);
+    openFileButton.addEventListener('click', () => {
+      fileInput.click();
+    });
+    
+    rotateButton.addEventListener('click', rotatePdf);
+    fullscreenButton.addEventListener('click', toggleFullscreen);
+    
+    darkModeToggle.addEventListener('click', toggleDarkModeHandler);
+    
+    toggleOutline.addEventListener('click', () => {
+      if (outlineContainer.style.display === 'block') {
+        outlineContainer.style.display = 'none';
+      } else {
+        outlineContainer.style.display = 'block';
+        renderOutline();
+      }
+    });
+    
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        showPrevPage();
+      } else if (e.key === 'ArrowRight') {
+        showNextPage();
+      } else if (e.key === '+' || e.key === '=') {
+        zoomInButton.click();
+      } else if (e.key === '-') {
+        zoomOutButton.click();
+      }
+    });
+    
+    // Initialize with the default PDF
+    initPdf(pdfUrl);
+  </script>
+</body>
+</html>
